@@ -1,0 +1,36 @@
+{
+"nodes": [
+    {
+        "id": "ccs", "x": 1396, "y": 876, "label": "College of Computing Studies"
+    },
+    {
+        "id": "elecBuilding", "x": 1812, "y": 810, "label": "Electrical Building"
+    }
+],
+"edges": [
+    {
+        "id": "e1",
+        "from": "ccs",
+        "to": "elecBuilding",
+	"weight": 1460,
+        "shape": 
+        [
+            {
+                "x": 1396, "y": 876
+            },
+            {
+                "x": 1414, "y": 937
+            },
+            {
+                "x": 1775, "y": 836
+            },
+            {
+                "x": 1778, "y": 313
+            },
+            {
+                "x": 1812, "y": 810
+            }
+        ]
+    }
+]
+}

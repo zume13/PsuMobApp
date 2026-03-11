@@ -1,53 +1,401 @@
 ﻿Build1=Default,b4a.example
 File1=Layout.bal
+File2=map.png
 FileGroup1=Default Group
+FileGroup2=Default Group
 Group=Default Group
 Library1=core
-Library2=xui
-Library3=osmdroid6
+Library2=scaleimageview
+Library3=xui
+Library4=json
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
 Module1=Starter
-NumberOfFiles=1
-NumberOfLibraries=3
+NumberOfFiles=2
+NumberOfLibraries=4
 NumberOfModules=1
 Version=13.4
 @EndOfDesignText@
 #Region  Project Attributes 
-	#ApplicationLabel: B4A Example
-	#VersionCode: 1
-	#VersionName: 
-	'SupportedOrientations possible values: unspecified, landscape or portrait.
-	#SupportedOrientations: unspecified
-	#CanInstallToExternalStorage: False
+    #ApplicationLabel: B4A Example
+    #VersionCode: 1
+    #VersionName: 
+    #SupportedOrientations: unspecified
+    #CanInstallToExternalStorage: False
+    #AdditionalJar: ScaleImage
 #End Region
 
 #Region  Activity Attributes 
-	#FullScreen: False
-	#IncludeTitle: False
+    #FullScreen: False
+    #IncludeTitle: False
 #End Region
 
 Sub Process_Globals
-	'These global variables will be declared once when the application starts.
-	'These variables can be accessed from all modules.
 	Private xui As XUI
 End Sub
 
 Sub Globals
-	'These global variables will be redeclared each time the activity is created.
+	Dim MapImage As Bitmap
+	Dim ImageViewer  As ScaleImageView
+	Dim OverlayPanel As Panel
+	Dim OverlayCanvas As Canvas
+
+	Dim Nodes As Map
+	Dim Edges As List
+	Dim Graph As Map
+	Dim RouteEdges As List
+
+	Dim StartNode As String
+	Dim EndNode As String
+	
+	Dim ScaleX As Float
+	Dim ScaleY As Float
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
 	Activity.LoadLayout("Layout")
+
+	RouteEdges.Initialize
+	StartNode = ""
+	EndNode   = ""
+
+	MapImage = LoadBitmap(File.DirAssets, "map.png")
+
+	ImageViewer.Initialize("ImageViewer")
+	Activity.AddView(ImageViewer, 0, 0, 100%x, 100%y)
+	ImageViewer.Image = MapImage
+
+	OverlayPanel.Initialize("OverlayPanel")
+	Activity.AddView(OverlayPanel, 0, 0, 100%x, 100%y)
+	OverlayPanel.Color = Colors.Transparent
+	OverlayCanvas.Initialize(OverlayPanel)
+
+	LoadAllMapData
+	DrawOverlay
 End Sub
 
 Sub Activity_Resume
-
 End Sub
 
-Sub Activity_Pause (UserClosed As Boolean)
-
+Sub Activity_Pause(UserClosed As Boolean)
 End Sub
 
-Sub Button1_Click
-	xui.MsgboxAsync("Hello world!", "B4X")
+Sub LoadAllMapData
+	Nodes.Initialize
+	Edges.Initialize
+	Graph.Initialize
+
+	Dim raw As String
+	raw = File.ReadString(File.DirAssets, "mapdata.json")
+
+	Dim parser As JSONParser
+	parser.Initialize(raw)
+	Dim root As Map
+	root = parser.NextObject
+
+	ParseNodes(root)
+	ParseEdges(root)
+	BuildGraph
+
+	Log("Map data loaded. Nodes: " & Nodes.Size & " Edges: " & Edges.Size)
+End Sub
+
+Sub ParseNodes(root As Map)
+	If root.ContainsKey("nodes") = False Then
+		Log("ERROR: no nodes key found in JSON")
+		Return
+	End If
+    
+	Dim nodeArray As List
+	nodeArray = root.Get("nodes")
+    
+	If nodeArray = Null Then
+		Log("ERROR: nodes array is null")
+		Return
+	End If
+
+	For Each nodeObj As Map In nodeArray
+		Dim n As Map
+		n.Initialize
+		n.Put("id", nodeObj.Get("id"))
+		n.Put("x",  nodeObj.Get("x"))
+		n.Put("y",  nodeObj.Get("y"))
+		n.Put("label", nodeObj.Get("label"))
+		Nodes.Put(nodeObj.Get("id"), n)
+		Log("Node: " & nodeObj.Get("id"))
+	Next
+End Sub
+
+Sub ParseEdges(root As Map)
+	If root.ContainsKey("edges") = False Then
+		Log("ERROR: no edges key found in JSON")
+		Return
+	End If
+
+	Dim edgeArray As List
+	edgeArray = root.Get("edges")
+
+	If edgeArray = Null Then
+		Log("ERROR: edges array is null")
+		Return
+	End If
+
+	For Each edgeObj As Map In edgeArray
+		Dim e As Map
+		e.Initialize
+		e.Put("id",     edgeObj.Get("id"))
+		e.Put("from",   edgeObj.Get("from"))
+		e.Put("to",     edgeObj.Get("to"))
+		e.Put("weight", edgeObj.Get("weight"))
+
+		' Check shape exists before parsing
+		If edgeObj.ContainsKey("shape") = False Then
+			Log("WARNING: edge " & edgeObj.Get("id") & " has no shape points")
+			Dim emptyShape As List : emptyShape.Initialize
+			e.Put("shape", emptyShape)
+		Else
+			Dim shapeArray As List
+			shapeArray = edgeObj.Get("shape")
+			
+			If shapeArray = Null Then
+				Log("WARNING: shape is null for edge " & edgeObj.Get("id"))
+				Dim emptyShape2 As List : emptyShape2.Initialize
+				e.Put("shape", emptyShape2)
+			Else
+				Dim shape As List
+				shape.Initialize
+				For Each pointObj As Map In shapeArray
+					Dim p As Map
+					p.Initialize
+					p.Put("x", pointObj.Get("x"))
+					p.Put("y", pointObj.Get("y"))
+					shape.Add(p)
+				Next
+				e.Put("shape", shape)
+			End If
+		End If
+		
+		Edges.Add(e)
+		Log("Edge: " & edgeObj.Get("id") & " (" & edgeObj.Get("from") & " -> " & edgeObj.Get("to") & ") shape pts: " & e.Get("shape"))
+	Next
+End Sub
+
+Sub BuildGraph
+	Graph.Initialize
+
+	For Each edge As Map In Edges
+		Dim fromId As String = edge.Get("from")
+		Dim toId   As String = edge.Get("to")
+		Dim weight As Int    = edge.Get("weight")
+		Dim edgeId As String = edge.Get("id")
+
+		If Graph.ContainsKey(fromId) = False Then
+			Dim l1 As List : l1.Initialize
+			Graph.Put(fromId, l1)
+		End If
+		Dim n1 As List = Graph.Get(fromId)
+		Dim c1 As Map  : c1.Initialize
+		c1.Put("neighbor", toId)
+		c1.Put("weight",   weight)
+		c1.Put("edgeId",   edgeId)
+		n1.Add(c1)
+		
+		If Graph.ContainsKey(toId) = False Then
+			Dim l2 As List : l2.Initialize
+			Graph.Put(toId, l2)
+		End If
+		Dim n2 As List = Graph.Get(toId)
+		Dim c2 As Map  : c2.Initialize
+		c2.Put("neighbor", fromId)
+		c2.Put("weight",   weight)
+		c2.Put("edgeId",   edgeId)
+		n2.Add(c2)
+	Next
+	
+	Log("Graph built. Nodes in graph: " & Graph.Size)
+End Sub
+
+Sub RunDijkstra(startId As String, endId As String)
+	Dim dist    As Map : dist.Initialize
+	Dim prev    As Map : prev.Initialize
+	Dim visited As Map : visited.Initialize
+	
+	For Each nodeId As String In Nodes.Keys
+		dist.Put(nodeId, 999999)
+		prev.Put(nodeId, "")
+	Next
+	dist.Put(startId, 0)
+	
+	Do While True
+		Dim current As String = ""
+		Dim minDist As Int = 999999
+		
+		For Each nodeId As String In Nodes.Keys
+			If visited.ContainsKey(nodeId) = False Then
+				Dim d As Int = dist.Get(nodeId)
+				If d < minDist Then
+					minDist = d
+					current = nodeId
+				End If
+			End If
+		Next
+
+		If current = "" Or current = endId Then Exit
+
+		visited.Put(current, True)
+
+		If Graph.ContainsKey(current) Then
+			Dim neighbors As List = Graph.Get(current)
+			For Each conn As Map In neighbors
+				Dim neighbor     As String = conn.Get("neighbor")
+				Dim currDist     As Int    = dist.Get(current)
+				Dim neighborDist As Int    = dist.Get(neighbor)
+				Dim edgeWeight   As Int    = conn.Get("weight")
+				Dim newDist      As Int    = currDist + edgeWeight
+				If newDist < neighborDist Then
+					dist.Put(neighbor, newDist)
+					prev.Put(neighbor, current)
+				End If
+			Next
+		End If
+	Loop
+
+	Dim path As List : path.Initialize
+	Dim steps As String
+	steps = endId
+	Do While steps <> ""
+		path.Add(steps)
+		If prev.ContainsKey(steps) = False Then
+			steps = ""
+		Else
+			Dim prevVal As String = prev.Get(steps)
+			If prevVal = Null Or prevVal = "" Then
+				steps = ""
+			Else
+				steps = prevVal
+			End If
+		End If
+	Loop
+	
+	Dim reversed As List : reversed.Initialize
+	For i = path.Size - 1 To 0 Step -1
+		reversed.Add(path.Get(i))
+	Next
+	
+	RouteEdges.Initialize
+	For i = 0 To reversed.Size - 2
+		Dim fromId As String = reversed.Get(i)
+		Dim toId   As String = reversed.Get(i + 1)
+		Dim found  As Object = FindEdge(fromId, toId)
+		If found <> Null Then
+			RouteEdges.Add(found)
+		End If
+	Next
+
+	Log("Route found: " & reversed.Size & " stops, " & RouteEdges.Size & " edges")
+	DrawOverlay
+End Sub
+
+Sub FindEdge(fromId As String, toId As String) As Object
+	For Each edge As Map In Edges
+		Dim a As String = edge.Get("from")
+		Dim b As String = edge.Get("to")
+		If (a = fromId And b = toId) Or (a = toId And b = fromId) Then
+			Return edge
+		End If
+	Next
+	Return Null
+End Sub
+
+Sub DrawOverlay
+	ScaleX = Activity.Width / MapImage.Width
+	ScaleY = Activity.Height / MapImage.Height
+
+	Log("Image size: " & MapImage.Width & " x " & MapImage.Height)
+	Log("Screen size: " & Activity.Width & " x " & Activity.Height)
+	Log("Scale: " & ScaleX & " x " & ScaleY)
+	
+	OverlayCanvas.Initialize(OverlayPanel)
+	DrawRoute
+	DrawNodes
+	OverlayPanel.Invalidate
+End Sub
+
+Sub DrawRoute
+	If RouteEdges.Size = 0 Then Return
+
+	For Each edge As Map In RouteEdges
+		Dim shape As List = edge.Get("shape")
+		For i = 0 To shape.Size - 2
+			Dim p1 As Map = shape.Get(i)
+			Dim p2 As Map = shape.Get(i + 1)
+
+			Dim x1 As Float = p1.Get("x") * ScaleX
+			Dim y1 As Float = p1.Get("y") * ScaleY
+			Dim x2 As Float = p2.Get("x") * ScaleX
+			Dim y2 As Float = p2.Get("y") * ScaleY
+
+			OverlayCanvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(80, 0, 120, 255), 16)
+			OverlayCanvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(220, 0, 120, 255), 8)
+		Next
+	Next
+End Sub
+
+Sub DrawNodes
+	For Each nodeId As String In Nodes.Keys
+		Dim node As Map = Nodes.Get(nodeId)
+		Dim x As Float = node.Get("x") * ScaleX
+		Dim y As Float = node.Get("y") * ScaleY
+
+		Dim fillColor As Int
+		If nodeId = StartNode Then
+			fillColor = Colors.Green
+		Else If nodeId = EndNode Then
+			fillColor = Colors.Red
+		Else
+			fillColor = Colors.ARGB(200, 30, 100, 255)
+		End If
+
+		OverlayCanvas.DrawCircle(x, y, 14, Colors.White, True, 0)
+		OverlayCanvas.DrawCircle(x, y, 11, fillColor, True, 0)
+	Next
+End Sub
+
+Sub OverlayPanel_Touch(Action As Int, X As Float, Y As Float)
+	If Action = 1 Then
+		Dim tappedId As String = GetNodeAtPosition(X, Y, 30)
+		If tappedId = "" Then Return
+
+		If StartNode = "" Then
+			StartNode = tappedId
+			Log("Start set: " & StartNode)
+			DrawOverlay
+
+		Else If EndNode = "" And tappedId <> StartNode Then
+			EndNode = tappedId
+			Log("End set: " & EndNode)
+			RunDijkstra(StartNode, EndNode)
+
+		Else
+			StartNode  = tappedId
+			EndNode    = ""
+			RouteEdges.Initialize
+			Log("Reset. New start: " & StartNode)
+			DrawOverlay
+		End If
+	End If
+End Sub
+
+Sub GetNodeAtPosition(tapX As Float, tapY As Float, radius As Int) As String
+	For Each nodeId As String In Nodes.Keys
+		Dim node As Map = Nodes.Get(nodeId)
+		Dim nx As Float = node.Get("x") * ScaleX
+		Dim ny As Float = node.Get("y") * ScaleY
+		Dim dx As Float = tapX - nx
+		Dim dy As Float = tapY - ny
+		Dim dist As Double = Sqrt(dx * dx + dy * dy)
+		If dist <= radius Then
+			Return nodeId
+		End If
+	Next
+	Return ""
 End Sub
