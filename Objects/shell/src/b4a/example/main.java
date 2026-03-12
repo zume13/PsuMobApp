@@ -58,18 +58,14 @@ public static RemoteObject __c = RemoteObject.declareNull("anywheresoftware.b4a.
 public static RemoteObject _xui = RemoteObject.declareNull("anywheresoftware.b4a.objects.B4XViewWrapper.XUI");
 public static RemoteObject _mapimage = RemoteObject.declareNull("anywheresoftware.b4a.objects.drawable.CanvasWrapper.BitmapWrapper");
 public static RemoteObject _imageviewer = RemoteObject.declareNull("agraham.b4a.scaleimageview.ScaleImageViewWrapper");
-public static RemoteObject _overlaypanel = RemoteObject.declareNull("anywheresoftware.b4a.objects.PanelWrapper");
-public static RemoteObject _overlaycanvas = RemoteObject.declareNull("anywheresoftware.b4a.objects.drawable.CanvasWrapper");
 public static RemoteObject _nodes = RemoteObject.declareNull("anywheresoftware.b4a.objects.collections.Map");
 public static RemoteObject _edges = RemoteObject.declareNull("anywheresoftware.b4a.objects.collections.List");
 public static RemoteObject _graph = RemoteObject.declareNull("anywheresoftware.b4a.objects.collections.Map");
 public static RemoteObject _routeedges = RemoteObject.declareNull("anywheresoftware.b4a.objects.collections.List");
 public static RemoteObject _startnode = RemoteObject.createImmutable("");
 public static RemoteObject _endnode = RemoteObject.createImmutable("");
-public static RemoteObject _scalex = RemoteObject.createImmutable(0f);
-public static RemoteObject _scaley = RemoteObject.createImmutable(0f);
 public static b4a.example.starter _starter = null;
   public Object[] GetGlobals() {
-		return new Object[] {"Activity",main.mostCurrent._activity,"Edges",main.mostCurrent._edges,"EndNode",main.mostCurrent._endnode,"Graph",main.mostCurrent._graph,"ImageViewer",main.mostCurrent._imageviewer,"MapImage",main.mostCurrent._mapimage,"Nodes",main.mostCurrent._nodes,"OverlayCanvas",main.mostCurrent._overlaycanvas,"OverlayPanel",main.mostCurrent._overlaypanel,"RouteEdges",main.mostCurrent._routeedges,"ScaleX",main._scalex,"ScaleY",main._scaley,"Starter",Debug.moduleToString(b4a.example.starter.class),"StartNode",main.mostCurrent._startnode,"xui",main._xui};
+		return new Object[] {"Activity",main.mostCurrent._activity,"Edges",main.mostCurrent._edges,"EndNode",main.mostCurrent._endnode,"Graph",main.mostCurrent._graph,"ImageViewer",main.mostCurrent._imageviewer,"MapImage",main.mostCurrent._mapimage,"Nodes",main.mostCurrent._nodes,"RouteEdges",main.mostCurrent._routeedges,"Starter",Debug.moduleToString(b4a.example.starter.class),"StartNode",main.mostCurrent._startnode,"xui",main._xui};
 }
 }

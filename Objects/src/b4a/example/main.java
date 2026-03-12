@@ -380,16 +380,12 @@ public anywheresoftware.b4a.keywords.Common __c = null;
 public static anywheresoftware.b4a.objects.B4XViewWrapper.XUI _xui = null;
 public anywheresoftware.b4a.objects.drawable.CanvasWrapper.BitmapWrapper _mapimage = null;
 public agraham.b4a.scaleimageview.ScaleImageViewWrapper _imageviewer = null;
-public anywheresoftware.b4a.objects.PanelWrapper _overlaypanel = null;
-public anywheresoftware.b4a.objects.drawable.CanvasWrapper _overlaycanvas = null;
 public anywheresoftware.b4a.objects.collections.Map _nodes = null;
 public anywheresoftware.b4a.objects.collections.List _edges = null;
 public anywheresoftware.b4a.objects.collections.Map _graph = null;
 public anywheresoftware.b4a.objects.collections.List _routeedges = null;
 public static String _startnode = "";
 public static String _endnode = "";
-public static float _scalex = 0f;
-public static float _scaley = 0f;
 public b4a.example.starter _starter = null;
 public static String  _activity_create(boolean _firsttime) throws Exception{
 RDebugUtils.currentModule="main";
@@ -422,25 +418,10 @@ RDebugUtils.currentLine=131083;
  //BA.debugLineNum = 131083;BA.debugLine="ImageViewer.Image = MapImage";
 mostCurrent._imageviewer.setImage((android.graphics.Bitmap)(mostCurrent._mapimage.getObject()));
 RDebugUtils.currentLine=131085;
- //BA.debugLineNum = 131085;BA.debugLine="OverlayPanel.Initialize(\"OverlayPanel\")";
-mostCurrent._overlaypanel.Initialize(mostCurrent.activityBA,"OverlayPanel");
-RDebugUtils.currentLine=131086;
- //BA.debugLineNum = 131086;BA.debugLine="Activity.AddView(OverlayPanel, 0, 0, 100%x, 100%y";
-mostCurrent._activity.AddView((android.view.View)(mostCurrent._overlaypanel.getObject()),(int) (0),(int) (0),anywheresoftware.b4a.keywords.Common.PerXToCurrent((float) (100),mostCurrent.activityBA),anywheresoftware.b4a.keywords.Common.PerYToCurrent((float) (100),mostCurrent.activityBA));
-RDebugUtils.currentLine=131087;
- //BA.debugLineNum = 131087;BA.debugLine="OverlayPanel.Color = Colors.Transparent";
-mostCurrent._overlaypanel.setColor(anywheresoftware.b4a.keywords.Common.Colors.Transparent);
-RDebugUtils.currentLine=131088;
- //BA.debugLineNum = 131088;BA.debugLine="OverlayCanvas.Initialize(OverlayPanel)";
-mostCurrent._overlaycanvas.Initialize((android.view.View)(mostCurrent._overlaypanel.getObject()));
-RDebugUtils.currentLine=131090;
- //BA.debugLineNum = 131090;BA.debugLine="LoadAllMapData";
+ //BA.debugLineNum = 131085;BA.debugLine="LoadAllMapData";
 _loadallmapdata();
-RDebugUtils.currentLine=131091;
- //BA.debugLineNum = 131091;BA.debugLine="DrawOverlay";
-_drawoverlay();
-RDebugUtils.currentLine=131092;
- //BA.debugLineNum = 131092;BA.debugLine="End Sub";
+RDebugUtils.currentLine=131086;
+ //BA.debugLineNum = 131086;BA.debugLine="End Sub";
 return "";
 }
 public static String  _loadallmapdata() throws Exception{
@@ -468,68 +449,40 @@ RDebugUtils.currentLine=327686;
  //BA.debugLineNum = 327686;BA.debugLine="raw = File.ReadString(File.DirAssets, \"mapdata.js";
 _raw = anywheresoftware.b4a.keywords.Common.File.ReadString(anywheresoftware.b4a.keywords.Common.File.getDirAssets(),"mapdata.json");
 RDebugUtils.currentLine=327688;
- //BA.debugLineNum = 327688;BA.debugLine="Dim parser As JSONParser";
-_parser = new anywheresoftware.b4a.objects.collections.JSONParser();
-RDebugUtils.currentLine=327689;
- //BA.debugLineNum = 327689;BA.debugLine="parser.Initialize(raw)";
-_parser.Initialize(_raw);
+ //BA.debugLineNum = 327688;BA.debugLine="Log(\"RAW JSON: \" & raw)";
+anywheresoftware.b4a.keywords.Common.LogImpl("4327688","RAW JSON: "+_raw,0);
 RDebugUtils.currentLine=327690;
- //BA.debugLineNum = 327690;BA.debugLine="Dim root As Map";
-_root = new anywheresoftware.b4a.objects.collections.Map();
+ //BA.debugLineNum = 327690;BA.debugLine="Dim parser As JSONParser";
+_parser = new anywheresoftware.b4a.objects.collections.JSONParser();
 RDebugUtils.currentLine=327691;
- //BA.debugLineNum = 327691;BA.debugLine="root = parser.NextObject";
-_root = _parser.NextObject();
+ //BA.debugLineNum = 327691;BA.debugLine="parser.Initialize(raw)";
+_parser.Initialize(_raw);
+RDebugUtils.currentLine=327692;
+ //BA.debugLineNum = 327692;BA.debugLine="Dim root As Map";
+_root = new anywheresoftware.b4a.objects.collections.Map();
 RDebugUtils.currentLine=327693;
- //BA.debugLineNum = 327693;BA.debugLine="ParseNodes(root)";
-_parsenodes(_root);
-RDebugUtils.currentLine=327694;
- //BA.debugLineNum = 327694;BA.debugLine="ParseEdges(root)";
-_parseedges(_root);
+ //BA.debugLineNum = 327693;BA.debugLine="root = parser.NextObject";
+_root = _parser.NextObject();
 RDebugUtils.currentLine=327695;
- //BA.debugLineNum = 327695;BA.debugLine="BuildGraph";
-_buildgraph();
+ //BA.debugLineNum = 327695;BA.debugLine="Log(\"ROOT KEYS: \" & root.Keys)";
+anywheresoftware.b4a.keywords.Common.LogImpl("4327695","ROOT KEYS: "+BA.ObjectToString(_root.Keys()),0);
 RDebugUtils.currentLine=327697;
- //BA.debugLineNum = 327697;BA.debugLine="Log(\"Map data loaded. Nodes: \" & Nodes.Size & \" E";
-anywheresoftware.b4a.keywords.Common.LogImpl("8327697","Map data loaded. Nodes: "+BA.NumberToString(mostCurrent._nodes.getSize())+" Edges: "+BA.NumberToString(mostCurrent._edges.getSize()),0);
+ //BA.debugLineNum = 327697;BA.debugLine="ParseNodes(root)";
+_parsenodes(_root);
 RDebugUtils.currentLine=327698;
- //BA.debugLineNum = 327698;BA.debugLine="End Sub";
-return "";
-}
-public static String  _drawoverlay() throws Exception{
-RDebugUtils.currentModule="main";
-if (Debug.shouldDelegate(mostCurrent.activityBA, "drawoverlay", false))
-	 {return ((String) Debug.delegate(mostCurrent.activityBA, "drawoverlay", null));}
-RDebugUtils.currentLine=720896;
- //BA.debugLineNum = 720896;BA.debugLine="Sub DrawOverlay";
-RDebugUtils.currentLine=720897;
- //BA.debugLineNum = 720897;BA.debugLine="ScaleX = Activity.Width / MapImage.Width";
-_scalex = (float) (mostCurrent._activity.getWidth()/(double)mostCurrent._mapimage.getWidth());
-RDebugUtils.currentLine=720898;
- //BA.debugLineNum = 720898;BA.debugLine="ScaleY = Activity.Height / MapImage.Height";
-_scaley = (float) (mostCurrent._activity.getHeight()/(double)mostCurrent._mapimage.getHeight());
-RDebugUtils.currentLine=720900;
- //BA.debugLineNum = 720900;BA.debugLine="Log(\"Image size: \" & MapImage.Width & \" x \" & Map";
-anywheresoftware.b4a.keywords.Common.LogImpl("8720900","Image size: "+BA.NumberToString(mostCurrent._mapimage.getWidth())+" x "+BA.NumberToString(mostCurrent._mapimage.getHeight()),0);
-RDebugUtils.currentLine=720901;
- //BA.debugLineNum = 720901;BA.debugLine="Log(\"Screen size: \" & Activity.Width & \" x \" & Ac";
-anywheresoftware.b4a.keywords.Common.LogImpl("8720901","Screen size: "+BA.NumberToString(mostCurrent._activity.getWidth())+" x "+BA.NumberToString(mostCurrent._activity.getHeight()),0);
-RDebugUtils.currentLine=720902;
- //BA.debugLineNum = 720902;BA.debugLine="Log(\"Scale: \" & ScaleX & \" x \" & ScaleY)";
-anywheresoftware.b4a.keywords.Common.LogImpl("8720902","Scale: "+BA.NumberToString(_scalex)+" x "+BA.NumberToString(_scaley),0);
-RDebugUtils.currentLine=720904;
- //BA.debugLineNum = 720904;BA.debugLine="OverlayCanvas.Initialize(OverlayPanel)";
-mostCurrent._overlaycanvas.Initialize((android.view.View)(mostCurrent._overlaypanel.getObject()));
-RDebugUtils.currentLine=720905;
- //BA.debugLineNum = 720905;BA.debugLine="DrawRoute";
-_drawroute();
-RDebugUtils.currentLine=720906;
- //BA.debugLineNum = 720906;BA.debugLine="DrawNodes";
-_drawnodes();
-RDebugUtils.currentLine=720907;
- //BA.debugLineNum = 720907;BA.debugLine="OverlayPanel.Invalidate";
-mostCurrent._overlaypanel.Invalidate();
-RDebugUtils.currentLine=720908;
- //BA.debugLineNum = 720908;BA.debugLine="End Sub";
+ //BA.debugLineNum = 327698;BA.debugLine="ParseEdges(root)";
+_parseedges(_root);
+RDebugUtils.currentLine=327699;
+ //BA.debugLineNum = 327699;BA.debugLine="BuildGraph";
+_buildgraph();
+RDebugUtils.currentLine=327701;
+ //BA.debugLineNum = 327701;BA.debugLine="Log(\"Map data loaded. Nodes: \" & Nodes.Size & \" E";
+anywheresoftware.b4a.keywords.Common.LogImpl("4327701","Map data loaded. Nodes: "+BA.NumberToString(mostCurrent._nodes.getSize())+" Edges: "+BA.NumberToString(mostCurrent._edges.getSize()),0);
+RDebugUtils.currentLine=327703;
+ //BA.debugLineNum = 327703;BA.debugLine="ImageViewer.Invalidate";
+mostCurrent._imageviewer.Invalidate();
+RDebugUtils.currentLine=327704;
+ //BA.debugLineNum = 327704;BA.debugLine="End Sub";
 return "";
 }
 public static String  _activity_pause(boolean _userclosed) throws Exception{
@@ -666,147 +619,9 @@ _n2.Add((Object)(_c2.getObject()));
 };
 RDebugUtils.currentLine=524320;
  //BA.debugLineNum = 524320;BA.debugLine="Log(\"Graph built. Nodes in graph: \" & Graph.Size)";
-anywheresoftware.b4a.keywords.Common.LogImpl("8524320","Graph built. Nodes in graph: "+BA.NumberToString(mostCurrent._graph.getSize()),0);
+anywheresoftware.b4a.keywords.Common.LogImpl("4524320","Graph built. Nodes in graph: "+BA.NumberToString(mostCurrent._graph.getSize()),0);
 RDebugUtils.currentLine=524321;
  //BA.debugLineNum = 524321;BA.debugLine="End Sub";
-return "";
-}
-public static String  _drawnodes() throws Exception{
-RDebugUtils.currentModule="main";
-if (Debug.shouldDelegate(mostCurrent.activityBA, "drawnodes", false))
-	 {return ((String) Debug.delegate(mostCurrent.activityBA, "drawnodes", null));}
-String _nodeid = "";
-anywheresoftware.b4a.objects.collections.Map _node = null;
-float _x = 0f;
-float _y = 0f;
-int _fillcolor = 0;
-RDebugUtils.currentLine=851968;
- //BA.debugLineNum = 851968;BA.debugLine="Sub DrawNodes";
-RDebugUtils.currentLine=851969;
- //BA.debugLineNum = 851969;BA.debugLine="For Each nodeId As String In Nodes.Keys";
-{
-final anywheresoftware.b4a.BA.IterableList group1 = mostCurrent._nodes.Keys();
-final int groupLen1 = group1.getSize()
-;int index1 = 0;
-;
-for (; index1 < groupLen1;index1++){
-_nodeid = BA.ObjectToString(group1.Get(index1));
-RDebugUtils.currentLine=851970;
- //BA.debugLineNum = 851970;BA.debugLine="Dim node As Map = Nodes.Get(nodeId)";
-_node = new anywheresoftware.b4a.objects.collections.Map();
-_node = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(mostCurrent._nodes.Get((Object)(_nodeid))));
-RDebugUtils.currentLine=851971;
- //BA.debugLineNum = 851971;BA.debugLine="Dim x As Float = node.Get(\"x\") * ScaleX";
-_x = (float) ((double)(BA.ObjectToNumber(_node.Get((Object)("x"))))*_scalex);
-RDebugUtils.currentLine=851972;
- //BA.debugLineNum = 851972;BA.debugLine="Dim y As Float = node.Get(\"y\") * ScaleY";
-_y = (float) ((double)(BA.ObjectToNumber(_node.Get((Object)("y"))))*_scaley);
-RDebugUtils.currentLine=851974;
- //BA.debugLineNum = 851974;BA.debugLine="Dim fillColor As Int";
-_fillcolor = 0;
-RDebugUtils.currentLine=851975;
- //BA.debugLineNum = 851975;BA.debugLine="If nodeId = StartNode Then";
-if ((_nodeid).equals(mostCurrent._startnode)) { 
-RDebugUtils.currentLine=851976;
- //BA.debugLineNum = 851976;BA.debugLine="fillColor = Colors.Green";
-_fillcolor = anywheresoftware.b4a.keywords.Common.Colors.Green;
- }else 
-{RDebugUtils.currentLine=851977;
- //BA.debugLineNum = 851977;BA.debugLine="Else If nodeId = EndNode Then";
-if ((_nodeid).equals(mostCurrent._endnode)) { 
-RDebugUtils.currentLine=851978;
- //BA.debugLineNum = 851978;BA.debugLine="fillColor = Colors.Red";
-_fillcolor = anywheresoftware.b4a.keywords.Common.Colors.Red;
- }else {
-RDebugUtils.currentLine=851980;
- //BA.debugLineNum = 851980;BA.debugLine="fillColor = Colors.ARGB(200, 30, 100, 255)";
-_fillcolor = anywheresoftware.b4a.keywords.Common.Colors.ARGB((int) (200),(int) (30),(int) (100),(int) (255));
- }}
-;
-RDebugUtils.currentLine=851983;
- //BA.debugLineNum = 851983;BA.debugLine="OverlayCanvas.DrawCircle(x, y, 14, Colors.White,";
-mostCurrent._overlaycanvas.DrawCircle(_x,_y,(float) (14),anywheresoftware.b4a.keywords.Common.Colors.White,anywheresoftware.b4a.keywords.Common.True,(float) (0));
-RDebugUtils.currentLine=851984;
- //BA.debugLineNum = 851984;BA.debugLine="OverlayCanvas.DrawCircle(x, y, 11, fillColor, Tr";
-mostCurrent._overlaycanvas.DrawCircle(_x,_y,(float) (11),_fillcolor,anywheresoftware.b4a.keywords.Common.True,(float) (0));
- }
-};
-RDebugUtils.currentLine=851986;
- //BA.debugLineNum = 851986;BA.debugLine="End Sub";
-return "";
-}
-public static String  _drawroute() throws Exception{
-RDebugUtils.currentModule="main";
-if (Debug.shouldDelegate(mostCurrent.activityBA, "drawroute", false))
-	 {return ((String) Debug.delegate(mostCurrent.activityBA, "drawroute", null));}
-anywheresoftware.b4a.objects.collections.Map _edge = null;
-anywheresoftware.b4a.objects.collections.List _shape = null;
-int _i = 0;
-anywheresoftware.b4a.objects.collections.Map _p1 = null;
-anywheresoftware.b4a.objects.collections.Map _p2 = null;
-float _x1 = 0f;
-float _y1 = 0f;
-float _x2 = 0f;
-float _y2 = 0f;
-RDebugUtils.currentLine=786432;
- //BA.debugLineNum = 786432;BA.debugLine="Sub DrawRoute";
-RDebugUtils.currentLine=786433;
- //BA.debugLineNum = 786433;BA.debugLine="If RouteEdges.Size = 0 Then Return";
-if (mostCurrent._routeedges.getSize()==0) { 
-if (true) return "";};
-RDebugUtils.currentLine=786435;
- //BA.debugLineNum = 786435;BA.debugLine="For Each edge As Map In RouteEdges";
-_edge = new anywheresoftware.b4a.objects.collections.Map();
-{
-final anywheresoftware.b4a.BA.IterableList group2 = mostCurrent._routeedges;
-final int groupLen2 = group2.getSize()
-;int index2 = 0;
-;
-for (; index2 < groupLen2;index2++){
-_edge = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(group2.Get(index2)));
-RDebugUtils.currentLine=786436;
- //BA.debugLineNum = 786436;BA.debugLine="Dim shape As List = edge.Get(\"shape\")";
-_shape = new anywheresoftware.b4a.objects.collections.List();
-_shape = (anywheresoftware.b4a.objects.collections.List) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.List(), (java.util.List)(_edge.Get((Object)("shape"))));
-RDebugUtils.currentLine=786437;
- //BA.debugLineNum = 786437;BA.debugLine="For i = 0 To shape.Size - 2";
-{
-final int step4 = 1;
-final int limit4 = (int) (_shape.getSize()-2);
-_i = (int) (0) ;
-for (;_i <= limit4 ;_i = _i + step4 ) {
-RDebugUtils.currentLine=786438;
- //BA.debugLineNum = 786438;BA.debugLine="Dim p1 As Map = shape.Get(i)";
-_p1 = new anywheresoftware.b4a.objects.collections.Map();
-_p1 = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(_shape.Get(_i)));
-RDebugUtils.currentLine=786439;
- //BA.debugLineNum = 786439;BA.debugLine="Dim p2 As Map = shape.Get(i + 1)";
-_p2 = new anywheresoftware.b4a.objects.collections.Map();
-_p2 = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(_shape.Get((int) (_i+1))));
-RDebugUtils.currentLine=786441;
- //BA.debugLineNum = 786441;BA.debugLine="Dim x1 As Float = p1.Get(\"x\") * ScaleX";
-_x1 = (float) ((double)(BA.ObjectToNumber(_p1.Get((Object)("x"))))*_scalex);
-RDebugUtils.currentLine=786442;
- //BA.debugLineNum = 786442;BA.debugLine="Dim y1 As Float = p1.Get(\"y\") * ScaleY";
-_y1 = (float) ((double)(BA.ObjectToNumber(_p1.Get((Object)("y"))))*_scaley);
-RDebugUtils.currentLine=786443;
- //BA.debugLineNum = 786443;BA.debugLine="Dim x2 As Float = p2.Get(\"x\") * ScaleX";
-_x2 = (float) ((double)(BA.ObjectToNumber(_p2.Get((Object)("x"))))*_scalex);
-RDebugUtils.currentLine=786444;
- //BA.debugLineNum = 786444;BA.debugLine="Dim y2 As Float = p2.Get(\"y\") * ScaleY";
-_y2 = (float) ((double)(BA.ObjectToNumber(_p2.Get((Object)("y"))))*_scaley);
-RDebugUtils.currentLine=786446;
- //BA.debugLineNum = 786446;BA.debugLine="OverlayCanvas.DrawLine(x1, y1, x2, y2, Colors.A";
-mostCurrent._overlaycanvas.DrawLine(_x1,_y1,_x2,_y2,anywheresoftware.b4a.keywords.Common.Colors.ARGB((int) (80),(int) (0),(int) (120),(int) (255)),(float) (16));
-RDebugUtils.currentLine=786447;
- //BA.debugLineNum = 786447;BA.debugLine="OverlayCanvas.DrawLine(x1, y1, x2, y2, Colors.A";
-mostCurrent._overlaycanvas.DrawLine(_x1,_y1,_x2,_y2,anywheresoftware.b4a.keywords.Common.Colors.ARGB((int) (220),(int) (0),(int) (120),(int) (255)),(float) (8));
- }
-};
- }
-};
-RDebugUtils.currentLine=786450;
- //BA.debugLineNum = 786450;BA.debugLine="End Sub";
 return "";
 }
 public static Object  _findedge(String _fromid,String _toid) throws Exception{
@@ -835,19 +650,33 @@ RDebugUtils.currentLine=655363;
  //BA.debugLineNum = 655363;BA.debugLine="Dim b As String = edge.Get(\"to\")";
 _b = BA.ObjectToString(_edge.Get((Object)("to")));
 RDebugUtils.currentLine=655364;
- //BA.debugLineNum = 655364;BA.debugLine="If (a = fromId And b = toId) Or (a = toId And b";
-if (((_a).equals(_fromid) && (_b).equals(_toid)) || ((_a).equals(_toid) && (_b).equals(_fromid))) { 
+ //BA.debugLineNum = 655364;BA.debugLine="If a = fromId And b = toId Then";
+if ((_a).equals(_fromid) && (_b).equals(_toid)) { 
 RDebugUtils.currentLine=655365;
- //BA.debugLineNum = 655365;BA.debugLine="Return edge";
+ //BA.debugLineNum = 655365;BA.debugLine="edge.Put(\"flipped\", False)";
+_edge.Put((Object)("flipped"),(Object)(anywheresoftware.b4a.keywords.Common.False));
+RDebugUtils.currentLine=655366;
+ //BA.debugLineNum = 655366;BA.debugLine="Return edge";
 if (true) return (Object)(_edge.getObject());
- };
+ }else 
+{RDebugUtils.currentLine=655367;
+ //BA.debugLineNum = 655367;BA.debugLine="Else If a = toId And b = fromId Then";
+if ((_a).equals(_toid) && (_b).equals(_fromid)) { 
+RDebugUtils.currentLine=655368;
+ //BA.debugLineNum = 655368;BA.debugLine="edge.Put(\"flipped\", True)";
+_edge.Put((Object)("flipped"),(Object)(anywheresoftware.b4a.keywords.Common.True));
+RDebugUtils.currentLine=655369;
+ //BA.debugLineNum = 655369;BA.debugLine="Return edge";
+if (true) return (Object)(_edge.getObject());
+ }}
+;
  }
 };
-RDebugUtils.currentLine=655368;
- //BA.debugLineNum = 655368;BA.debugLine="Return Null";
+RDebugUtils.currentLine=655372;
+ //BA.debugLineNum = 655372;BA.debugLine="Return Null";
 if (true) return anywheresoftware.b4a.keywords.Common.Null;
-RDebugUtils.currentLine=655369;
- //BA.debugLineNum = 655369;BA.debugLine="End Sub";
+RDebugUtils.currentLine=655373;
+ //BA.debugLineNum = 655373;BA.debugLine="End Sub";
 return null;
 }
 public static String  _getnodeatposition(float _tapx,float _tapy,int _radius) throws Exception{
@@ -877,11 +706,11 @@ RDebugUtils.currentLine=983042;
 _node = new anywheresoftware.b4a.objects.collections.Map();
 _node = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(mostCurrent._nodes.Get((Object)(_nodeid))));
 RDebugUtils.currentLine=983043;
- //BA.debugLineNum = 983043;BA.debugLine="Dim nx As Float = node.Get(\"x\") * ScaleX";
-_nx = (float) ((double)(BA.ObjectToNumber(_node.Get((Object)("x"))))*_scalex);
+ //BA.debugLineNum = 983043;BA.debugLine="Dim nx As Float = node.Get(\"x\")";
+_nx = (float)(BA.ObjectToNumber(_node.Get((Object)("x"))));
 RDebugUtils.currentLine=983044;
- //BA.debugLineNum = 983044;BA.debugLine="Dim ny As Float = node.Get(\"y\") * ScaleY";
-_ny = (float) ((double)(BA.ObjectToNumber(_node.Get((Object)("y"))))*_scaley);
+ //BA.debugLineNum = 983044;BA.debugLine="Dim ny As Float = node.Get(\"y\")";
+_ny = (float)(BA.ObjectToNumber(_node.Get((Object)("y"))));
 RDebugUtils.currentLine=983045;
  //BA.debugLineNum = 983045;BA.debugLine="Dim dx As Float = tapX - nx";
 _dx = (float) (_tapx-_nx);
@@ -907,6 +736,585 @@ RDebugUtils.currentLine=983053;
  //BA.debugLineNum = 983053;BA.debugLine="End Sub";
 return "";
 }
+public static String  _imageviewer_click() throws Exception{
+RDebugUtils.currentModule="main";
+if (Debug.shouldDelegate(mostCurrent.activityBA, "imageviewer_click", false))
+	 {return ((String) Debug.delegate(mostCurrent.activityBA, "imageviewer_click", null));}
+float _tapx = 0f;
+float _tapy = 0f;
+String _tappedid = "";
+RDebugUtils.currentLine=1572864;
+ //BA.debugLineNum = 1572864;BA.debugLine="Sub ImageViewer_Click";
+RDebugUtils.currentLine=1572865;
+ //BA.debugLineNum = 1572865;BA.debugLine="Dim tapX As Float = ImageViewer.ClickImageX";
+_tapx = mostCurrent._imageviewer.getClickImageX();
+RDebugUtils.currentLine=1572866;
+ //BA.debugLineNum = 1572866;BA.debugLine="Dim tapY As Float = ImageViewer.ClickImageY";
+_tapy = mostCurrent._imageviewer.getClickImageY();
+RDebugUtils.currentLine=1572868;
+ //BA.debugLineNum = 1572868;BA.debugLine="Log(\"Tapped image coords: \" & tapX & \",\" & tapY)";
+anywheresoftware.b4a.keywords.Common.LogImpl("41572868","Tapped image coords: "+BA.NumberToString(_tapx)+","+BA.NumberToString(_tapy),0);
+RDebugUtils.currentLine=1572870;
+ //BA.debugLineNum = 1572870;BA.debugLine="Dim tappedId As String = GetNodeAtPosition(tapX,";
+_tappedid = _getnodeatposition(_tapx,_tapy,(int) (50));
+RDebugUtils.currentLine=1572871;
+ //BA.debugLineNum = 1572871;BA.debugLine="Log(\"Tapped node: \" & tappedId)";
+anywheresoftware.b4a.keywords.Common.LogImpl("41572871","Tapped node: "+_tappedid,0);
+RDebugUtils.currentLine=1572872;
+ //BA.debugLineNum = 1572872;BA.debugLine="If tappedId = \"\" Then Return";
+if ((_tappedid).equals("")) { 
+if (true) return "";};
+RDebugUtils.currentLine=1572874;
+ //BA.debugLineNum = 1572874;BA.debugLine="If StartNode <> \"\" And EndNode <> \"\" Then";
+if ((mostCurrent._startnode).equals("") == false && (mostCurrent._endnode).equals("") == false) { 
+RDebugUtils.currentLine=1572875;
+ //BA.debugLineNum = 1572875;BA.debugLine="StartNode = \"\"";
+mostCurrent._startnode = "";
+RDebugUtils.currentLine=1572876;
+ //BA.debugLineNum = 1572876;BA.debugLine="EndNode   = \"\"";
+mostCurrent._endnode = "";
+RDebugUtils.currentLine=1572877;
+ //BA.debugLineNum = 1572877;BA.debugLine="RouteEdges.Initialize";
+mostCurrent._routeedges.Initialize();
+ };
+RDebugUtils.currentLine=1572880;
+ //BA.debugLineNum = 1572880;BA.debugLine="If StartNode = \"\" Then";
+if ((mostCurrent._startnode).equals("")) { 
+RDebugUtils.currentLine=1572881;
+ //BA.debugLineNum = 1572881;BA.debugLine="StartNode = tappedId";
+mostCurrent._startnode = _tappedid;
+RDebugUtils.currentLine=1572882;
+ //BA.debugLineNum = 1572882;BA.debugLine="Log(\"Start set: \" & StartNode)";
+anywheresoftware.b4a.keywords.Common.LogImpl("41572882","Start set: "+mostCurrent._startnode,0);
+RDebugUtils.currentLine=1572883;
+ //BA.debugLineNum = 1572883;BA.debugLine="ImageViewer.Invalidate";
+mostCurrent._imageviewer.Invalidate();
+ }else 
+{RDebugUtils.currentLine=1572885;
+ //BA.debugLineNum = 1572885;BA.debugLine="Else If tappedId <> StartNode Then";
+if ((_tappedid).equals(mostCurrent._startnode) == false) { 
+RDebugUtils.currentLine=1572886;
+ //BA.debugLineNum = 1572886;BA.debugLine="EndNode = tappedId";
+mostCurrent._endnode = _tappedid;
+RDebugUtils.currentLine=1572887;
+ //BA.debugLineNum = 1572887;BA.debugLine="Log(\"End set: \" & EndNode)";
+anywheresoftware.b4a.keywords.Common.LogImpl("41572887","End set: "+mostCurrent._endnode,0);
+RDebugUtils.currentLine=1572888;
+ //BA.debugLineNum = 1572888;BA.debugLine="RunDijkstra(StartNode, EndNode)";
+_rundijkstra(mostCurrent._startnode,mostCurrent._endnode);
+ }}
+;
+RDebugUtils.currentLine=1572890;
+ //BA.debugLineNum = 1572890;BA.debugLine="End Sub";
+return "";
+}
+public static String  _rundijkstra(String _startid,String _endid) throws Exception{
+RDebugUtils.currentModule="main";
+if (Debug.shouldDelegate(mostCurrent.activityBA, "rundijkstra", false))
+	 {return ((String) Debug.delegate(mostCurrent.activityBA, "rundijkstra", new Object[] {_startid,_endid}));}
+anywheresoftware.b4a.objects.collections.Map _dist = null;
+anywheresoftware.b4a.objects.collections.Map _prev = null;
+anywheresoftware.b4a.objects.collections.Map _visited = null;
+String _nodeid = "";
+String _current = "";
+int _mindist = 0;
+int _d = 0;
+anywheresoftware.b4a.objects.collections.List _neighbors = null;
+anywheresoftware.b4a.objects.collections.Map _conn = null;
+String _neighbor = "";
+int _currdist = 0;
+int _neighbordist = 0;
+int _edgeweight = 0;
+int _newdist = 0;
+anywheresoftware.b4a.objects.collections.List _path = null;
+String _steps = "";
+String _prevval = "";
+anywheresoftware.b4a.objects.collections.List _reversed = null;
+int _i = 0;
+String _n = "";
+String _fromid = "";
+String _toid = "";
+Object _found = null;
+RDebugUtils.currentLine=589824;
+ //BA.debugLineNum = 589824;BA.debugLine="Sub RunDijkstra(startId As String, endId As String";
+RDebugUtils.currentLine=589825;
+ //BA.debugLineNum = 589825;BA.debugLine="Log(\"Dijkstra running from: \" & startId & \" to: \"";
+anywheresoftware.b4a.keywords.Common.LogImpl("4589825","Dijkstra running from: "+_startid+" to: "+_endid,0);
+RDebugUtils.currentLine=589827;
+ //BA.debugLineNum = 589827;BA.debugLine="Dim dist    As Map : dist.Initialize";
+_dist = new anywheresoftware.b4a.objects.collections.Map();
+RDebugUtils.currentLine=589827;
+ //BA.debugLineNum = 589827;BA.debugLine="Dim dist    As Map : dist.Initialize";
+_dist.Initialize();
+RDebugUtils.currentLine=589828;
+ //BA.debugLineNum = 589828;BA.debugLine="Dim prev    As Map : prev.Initialize";
+_prev = new anywheresoftware.b4a.objects.collections.Map();
+RDebugUtils.currentLine=589828;
+ //BA.debugLineNum = 589828;BA.debugLine="Dim prev    As Map : prev.Initialize";
+_prev.Initialize();
+RDebugUtils.currentLine=589829;
+ //BA.debugLineNum = 589829;BA.debugLine="Dim visited As Map : visited.Initialize";
+_visited = new anywheresoftware.b4a.objects.collections.Map();
+RDebugUtils.currentLine=589829;
+ //BA.debugLineNum = 589829;BA.debugLine="Dim visited As Map : visited.Initialize";
+_visited.Initialize();
+RDebugUtils.currentLine=589831;
+ //BA.debugLineNum = 589831;BA.debugLine="For Each nodeId As String In Nodes.Keys";
+{
+final anywheresoftware.b4a.BA.IterableList group8 = mostCurrent._nodes.Keys();
+final int groupLen8 = group8.getSize()
+;int index8 = 0;
+;
+for (; index8 < groupLen8;index8++){
+_nodeid = BA.ObjectToString(group8.Get(index8));
+RDebugUtils.currentLine=589832;
+ //BA.debugLineNum = 589832;BA.debugLine="dist.Put(nodeId, 999999)";
+_dist.Put((Object)(_nodeid),(Object)(999999));
+RDebugUtils.currentLine=589833;
+ //BA.debugLineNum = 589833;BA.debugLine="prev.Put(nodeId, \"\")";
+_prev.Put((Object)(_nodeid),(Object)(""));
+ }
+};
+RDebugUtils.currentLine=589835;
+ //BA.debugLineNum = 589835;BA.debugLine="dist.Put(startId, 0)";
+_dist.Put((Object)(_startid),(Object)(0));
+RDebugUtils.currentLine=589837;
+ //BA.debugLineNum = 589837;BA.debugLine="Do While True";
+while (anywheresoftware.b4a.keywords.Common.True) {
+RDebugUtils.currentLine=589838;
+ //BA.debugLineNum = 589838;BA.debugLine="Dim current As String = \"\"";
+_current = "";
+RDebugUtils.currentLine=589839;
+ //BA.debugLineNum = 589839;BA.debugLine="Dim minDist As Int = 999999";
+_mindist = (int) (999999);
+RDebugUtils.currentLine=589841;
+ //BA.debugLineNum = 589841;BA.debugLine="For Each nodeId As String In Nodes.Keys";
+{
+final anywheresoftware.b4a.BA.IterableList group16 = mostCurrent._nodes.Keys();
+final int groupLen16 = group16.getSize()
+;int index16 = 0;
+;
+for (; index16 < groupLen16;index16++){
+_nodeid = BA.ObjectToString(group16.Get(index16));
+RDebugUtils.currentLine=589842;
+ //BA.debugLineNum = 589842;BA.debugLine="If visited.ContainsKey(nodeId) = False Then";
+if (_visited.ContainsKey((Object)(_nodeid))==anywheresoftware.b4a.keywords.Common.False) { 
+RDebugUtils.currentLine=589843;
+ //BA.debugLineNum = 589843;BA.debugLine="Dim d As Int = dist.Get(nodeId)";
+_d = (int)(BA.ObjectToNumber(_dist.Get((Object)(_nodeid))));
+RDebugUtils.currentLine=589844;
+ //BA.debugLineNum = 589844;BA.debugLine="If d < minDist Then";
+if (_d<_mindist) { 
+RDebugUtils.currentLine=589845;
+ //BA.debugLineNum = 589845;BA.debugLine="minDist = d";
+_mindist = _d;
+RDebugUtils.currentLine=589846;
+ //BA.debugLineNum = 589846;BA.debugLine="current = nodeId";
+_current = _nodeid;
+ };
+ };
+ }
+};
+RDebugUtils.currentLine=589851;
+ //BA.debugLineNum = 589851;BA.debugLine="If current = \"\" Or current = endId Then Exit";
+if ((_current).equals("") || (_current).equals(_endid)) { 
+if (true) break;};
+RDebugUtils.currentLine=589853;
+ //BA.debugLineNum = 589853;BA.debugLine="visited.Put(current, True)";
+_visited.Put((Object)(_current),(Object)(anywheresoftware.b4a.keywords.Common.True));
+RDebugUtils.currentLine=589855;
+ //BA.debugLineNum = 589855;BA.debugLine="If Graph.ContainsKey(current) Then";
+if (mostCurrent._graph.ContainsKey((Object)(_current))) { 
+RDebugUtils.currentLine=589856;
+ //BA.debugLineNum = 589856;BA.debugLine="Dim neighbors As List = Graph.Get(current)";
+_neighbors = new anywheresoftware.b4a.objects.collections.List();
+_neighbors = (anywheresoftware.b4a.objects.collections.List) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.List(), (java.util.List)(mostCurrent._graph.Get((Object)(_current))));
+RDebugUtils.currentLine=589857;
+ //BA.debugLineNum = 589857;BA.debugLine="For Each conn As Map In neighbors";
+_conn = new anywheresoftware.b4a.objects.collections.Map();
+{
+final anywheresoftware.b4a.BA.IterableList group29 = _neighbors;
+final int groupLen29 = group29.getSize()
+;int index29 = 0;
+;
+for (; index29 < groupLen29;index29++){
+_conn = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(group29.Get(index29)));
+RDebugUtils.currentLine=589858;
+ //BA.debugLineNum = 589858;BA.debugLine="Dim neighbor     As String = conn.Get(\"neighbo";
+_neighbor = BA.ObjectToString(_conn.Get((Object)("neighbor")));
+RDebugUtils.currentLine=589859;
+ //BA.debugLineNum = 589859;BA.debugLine="Dim currDist     As Int    = dist.Get(current)";
+_currdist = (int)(BA.ObjectToNumber(_dist.Get((Object)(_current))));
+RDebugUtils.currentLine=589860;
+ //BA.debugLineNum = 589860;BA.debugLine="Dim neighborDist As Int    = dist.Get(neighbor";
+_neighbordist = (int)(BA.ObjectToNumber(_dist.Get((Object)(_neighbor))));
+RDebugUtils.currentLine=589861;
+ //BA.debugLineNum = 589861;BA.debugLine="Dim edgeWeight   As Int    = conn.Get(\"weight\"";
+_edgeweight = (int)(BA.ObjectToNumber(_conn.Get((Object)("weight"))));
+RDebugUtils.currentLine=589862;
+ //BA.debugLineNum = 589862;BA.debugLine="Dim newDist      As Int    = currDist + edgeWe";
+_newdist = (int) (_currdist+_edgeweight);
+RDebugUtils.currentLine=589863;
+ //BA.debugLineNum = 589863;BA.debugLine="If newDist < neighborDist Then";
+if (_newdist<_neighbordist) { 
+RDebugUtils.currentLine=589864;
+ //BA.debugLineNum = 589864;BA.debugLine="dist.Put(neighbor, newDist)";
+_dist.Put((Object)(_neighbor),(Object)(_newdist));
+RDebugUtils.currentLine=589865;
+ //BA.debugLineNum = 589865;BA.debugLine="prev.Put(neighbor, current)";
+_prev.Put((Object)(_neighbor),(Object)(_current));
+ };
+ }
+};
+ };
+ }
+;
+RDebugUtils.currentLine=589871;
+ //BA.debugLineNum = 589871;BA.debugLine="Dim path As List : path.Initialize";
+_path = new anywheresoftware.b4a.objects.collections.List();
+RDebugUtils.currentLine=589871;
+ //BA.debugLineNum = 589871;BA.debugLine="Dim path As List : path.Initialize";
+_path.Initialize();
+RDebugUtils.currentLine=589872;
+ //BA.debugLineNum = 589872;BA.debugLine="Dim steps As String";
+_steps = "";
+RDebugUtils.currentLine=589873;
+ //BA.debugLineNum = 589873;BA.debugLine="steps = endId";
+_steps = _endid;
+RDebugUtils.currentLine=589874;
+ //BA.debugLineNum = 589874;BA.debugLine="Do While steps <> \"\"";
+while ((_steps).equals("") == false) {
+RDebugUtils.currentLine=589875;
+ //BA.debugLineNum = 589875;BA.debugLine="path.Add(steps)";
+_path.Add((Object)(_steps));
+RDebugUtils.currentLine=589876;
+ //BA.debugLineNum = 589876;BA.debugLine="If prev.ContainsKey(steps) = False Then";
+if (_prev.ContainsKey((Object)(_steps))==anywheresoftware.b4a.keywords.Common.False) { 
+RDebugUtils.currentLine=589877;
+ //BA.debugLineNum = 589877;BA.debugLine="steps = \"\"";
+_steps = "";
+ }else {
+RDebugUtils.currentLine=589879;
+ //BA.debugLineNum = 589879;BA.debugLine="Dim prevVal As String = prev.Get(steps)";
+_prevval = BA.ObjectToString(_prev.Get((Object)(_steps)));
+RDebugUtils.currentLine=589880;
+ //BA.debugLineNum = 589880;BA.debugLine="If prevVal = Null Or prevVal = \"\" Then";
+if (_prevval== null || (_prevval).equals("")) { 
+RDebugUtils.currentLine=589881;
+ //BA.debugLineNum = 589881;BA.debugLine="steps = \"\"";
+_steps = "";
+ }else {
+RDebugUtils.currentLine=589883;
+ //BA.debugLineNum = 589883;BA.debugLine="steps = prevVal";
+_steps = _prevval;
+ };
+ };
+ }
+;
+RDebugUtils.currentLine=589888;
+ //BA.debugLineNum = 589888;BA.debugLine="Dim reversed As List : reversed.Initialize";
+_reversed = new anywheresoftware.b4a.objects.collections.List();
+RDebugUtils.currentLine=589888;
+ //BA.debugLineNum = 589888;BA.debugLine="Dim reversed As List : reversed.Initialize";
+_reversed.Initialize();
+RDebugUtils.currentLine=589889;
+ //BA.debugLineNum = 589889;BA.debugLine="For i = path.Size - 1 To 0 Step -1";
+{
+final int step61 = -1;
+final int limit61 = (int) (0);
+_i = (int) (_path.getSize()-1) ;
+for (;_i >= limit61 ;_i = _i + step61 ) {
+RDebugUtils.currentLine=589890;
+ //BA.debugLineNum = 589890;BA.debugLine="reversed.Add(path.Get(i))";
+_reversed.Add(_path.Get(_i));
+ }
+};
+RDebugUtils.currentLine=589893;
+ //BA.debugLineNum = 589893;BA.debugLine="Log(\"Path size: \" & reversed.Size)";
+anywheresoftware.b4a.keywords.Common.LogImpl("4589893","Path size: "+BA.NumberToString(_reversed.getSize()),0);
+RDebugUtils.currentLine=589894;
+ //BA.debugLineNum = 589894;BA.debugLine="For Each n As String In reversed";
+{
+final anywheresoftware.b4a.BA.IterableList group65 = _reversed;
+final int groupLen65 = group65.getSize()
+;int index65 = 0;
+;
+for (; index65 < groupLen65;index65++){
+_n = BA.ObjectToString(group65.Get(index65));
+RDebugUtils.currentLine=589895;
+ //BA.debugLineNum = 589895;BA.debugLine="Log(\"Path node: \" & n)";
+anywheresoftware.b4a.keywords.Common.LogImpl("4589895","Path node: "+_n,0);
+ }
+};
+RDebugUtils.currentLine=589898;
+ //BA.debugLineNum = 589898;BA.debugLine="RouteEdges.Initialize";
+mostCurrent._routeedges.Initialize();
+RDebugUtils.currentLine=589899;
+ //BA.debugLineNum = 589899;BA.debugLine="For i = 0 To reversed.Size - 2";
+{
+final int step69 = 1;
+final int limit69 = (int) (_reversed.getSize()-2);
+_i = (int) (0) ;
+for (;_i <= limit69 ;_i = _i + step69 ) {
+RDebugUtils.currentLine=589900;
+ //BA.debugLineNum = 589900;BA.debugLine="Dim fromId As String = reversed.Get(i)";
+_fromid = BA.ObjectToString(_reversed.Get(_i));
+RDebugUtils.currentLine=589901;
+ //BA.debugLineNum = 589901;BA.debugLine="Dim toId   As String = reversed.Get(i + 1)";
+_toid = BA.ObjectToString(_reversed.Get((int) (_i+1)));
+RDebugUtils.currentLine=589902;
+ //BA.debugLineNum = 589902;BA.debugLine="Dim found  As Object = FindEdge(fromId, toId)";
+_found = _findedge(_fromid,_toid);
+RDebugUtils.currentLine=589903;
+ //BA.debugLineNum = 589903;BA.debugLine="If found <> Null Then";
+if (_found!= null) { 
+RDebugUtils.currentLine=589904;
+ //BA.debugLineNum = 589904;BA.debugLine="RouteEdges.Add(found)";
+mostCurrent._routeedges.Add(_found);
+ };
+ }
+};
+RDebugUtils.currentLine=589908;
+ //BA.debugLineNum = 589908;BA.debugLine="Log(\"RouteEdges size: \" & RouteEdges.Size)";
+anywheresoftware.b4a.keywords.Common.LogImpl("4589908","RouteEdges size: "+BA.NumberToString(mostCurrent._routeedges.getSize()),0);
+RDebugUtils.currentLine=589909;
+ //BA.debugLineNum = 589909;BA.debugLine="ImageViewer.Invalidate";
+mostCurrent._imageviewer.Invalidate();
+RDebugUtils.currentLine=589910;
+ //BA.debugLineNum = 589910;BA.debugLine="End Sub";
+return "";
+}
+public static String  _imageviewer_ondraw(anywheresoftware.b4a.objects.drawable.CanvasWrapper _canvas) throws Exception{
+RDebugUtils.currentModule="main";
+if (Debug.shouldDelegate(mostCurrent.activityBA, "imageviewer_ondraw", false))
+	 {return ((String) Debug.delegate(mostCurrent.activityBA, "imageviewer_ondraw", new Object[] {_canvas}));}
+float _scale = 0f;
+float _cx = 0f;
+float _cy = 0f;
+float _halfw = 0f;
+float _halfh = 0f;
+anywheresoftware.b4a.objects.collections.Map _edge = null;
+anywheresoftware.b4a.objects.collections.List _shape = null;
+boolean _flipped = false;
+anywheresoftware.b4a.objects.collections.List _drawshape = null;
+int _i = 0;
+anywheresoftware.b4a.objects.collections.Map _p1 = null;
+anywheresoftware.b4a.objects.collections.Map _p2 = null;
+float _ix1 = 0f;
+float _iy1 = 0f;
+float _ix2 = 0f;
+float _iy2 = 0f;
+float _x1 = 0f;
+float _y1 = 0f;
+float _x2 = 0f;
+float _y2 = 0f;
+String _nodeid = "";
+anywheresoftware.b4a.objects.collections.Map _node = null;
+float _x = 0f;
+float _y = 0f;
+String _label = "";
+int _fillcolor = 0;
+RDebugUtils.currentLine=1507328;
+ //BA.debugLineNum = 1507328;BA.debugLine="Sub ImageViewer_OnDraw(Canvas As Canvas)";
+RDebugUtils.currentLine=1507329;
+ //BA.debugLineNum = 1507329;BA.debugLine="If Nodes.IsInitialized = False Then Return";
+if (mostCurrent._nodes.IsInitialized()==anywheresoftware.b4a.keywords.Common.False) { 
+if (true) return "";};
+RDebugUtils.currentLine=1507330;
+ //BA.debugLineNum = 1507330;BA.debugLine="If Nodes.Size = 0 Then Return";
+if (mostCurrent._nodes.getSize()==0) { 
+if (true) return "";};
+RDebugUtils.currentLine=1507332;
+ //BA.debugLineNum = 1507332;BA.debugLine="Dim scale  As Float = ImageViewer.Scale";
+_scale = mostCurrent._imageviewer.getScale();
+RDebugUtils.currentLine=1507333;
+ //BA.debugLineNum = 1507333;BA.debugLine="Dim cx     As Float = ImageViewer.CenterX";
+_cx = mostCurrent._imageviewer.getCenterX();
+RDebugUtils.currentLine=1507334;
+ //BA.debugLineNum = 1507334;BA.debugLine="Dim cy     As Float = ImageViewer.CenterY";
+_cy = mostCurrent._imageviewer.getCenterY();
+RDebugUtils.currentLine=1507335;
+ //BA.debugLineNum = 1507335;BA.debugLine="Dim halfW  As Float = ImageViewer.Width  / 2";
+_halfw = (float) (mostCurrent._imageviewer.getWidth()/(double)2);
+RDebugUtils.currentLine=1507336;
+ //BA.debugLineNum = 1507336;BA.debugLine="Dim halfH  As Float = ImageViewer.Height / 2";
+_halfh = (float) (mostCurrent._imageviewer.getHeight()/(double)2);
+RDebugUtils.currentLine=1507338;
+ //BA.debugLineNum = 1507338;BA.debugLine="Log(\"Scale: \" & scale & \" CenterX: \" & cx & \" Cen";
+anywheresoftware.b4a.keywords.Common.LogImpl("41507338","Scale: "+BA.NumberToString(_scale)+" CenterX: "+BA.NumberToString(_cx)+" CenterY: "+BA.NumberToString(_cy),0);
+RDebugUtils.currentLine=1507341;
+ //BA.debugLineNum = 1507341;BA.debugLine="If RouteEdges.Size > 0 Then";
+if (mostCurrent._routeedges.getSize()>0) { 
+RDebugUtils.currentLine=1507342;
+ //BA.debugLineNum = 1507342;BA.debugLine="For Each edge As Map In RouteEdges";
+_edge = new anywheresoftware.b4a.objects.collections.Map();
+{
+final anywheresoftware.b4a.BA.IterableList group10 = mostCurrent._routeedges;
+final int groupLen10 = group10.getSize()
+;int index10 = 0;
+;
+for (; index10 < groupLen10;index10++){
+_edge = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(group10.Get(index10)));
+RDebugUtils.currentLine=1507343;
+ //BA.debugLineNum = 1507343;BA.debugLine="Dim shape As List = edge.Get(\"shape\")";
+_shape = new anywheresoftware.b4a.objects.collections.List();
+_shape = (anywheresoftware.b4a.objects.collections.List) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.List(), (java.util.List)(_edge.Get((Object)("shape"))));
+RDebugUtils.currentLine=1507344;
+ //BA.debugLineNum = 1507344;BA.debugLine="Dim flipped As Boolean = edge.Get(\"flipped\")";
+_flipped = BA.ObjectToBoolean(_edge.Get((Object)("flipped")));
+RDebugUtils.currentLine=1507346;
+ //BA.debugLineNum = 1507346;BA.debugLine="Dim drawShape As List";
+_drawshape = new anywheresoftware.b4a.objects.collections.List();
+RDebugUtils.currentLine=1507347;
+ //BA.debugLineNum = 1507347;BA.debugLine="drawShape.Initialize";
+_drawshape.Initialize();
+RDebugUtils.currentLine=1507348;
+ //BA.debugLineNum = 1507348;BA.debugLine="If flipped Then";
+if (_flipped) { 
+RDebugUtils.currentLine=1507349;
+ //BA.debugLineNum = 1507349;BA.debugLine="For i = shape.Size - 1 To 0 Step -1";
+{
+final int step16 = -1;
+final int limit16 = (int) (0);
+_i = (int) (_shape.getSize()-1) ;
+for (;_i >= limit16 ;_i = _i + step16 ) {
+RDebugUtils.currentLine=1507350;
+ //BA.debugLineNum = 1507350;BA.debugLine="drawShape.Add(shape.Get(i))";
+_drawshape.Add(_shape.Get(_i));
+ }
+};
+ }else {
+RDebugUtils.currentLine=1507353;
+ //BA.debugLineNum = 1507353;BA.debugLine="For i = 0 To shape.Size - 1";
+{
+final int step20 = 1;
+final int limit20 = (int) (_shape.getSize()-1);
+_i = (int) (0) ;
+for (;_i <= limit20 ;_i = _i + step20 ) {
+RDebugUtils.currentLine=1507354;
+ //BA.debugLineNum = 1507354;BA.debugLine="drawShape.Add(shape.Get(i))";
+_drawshape.Add(_shape.Get(_i));
+ }
+};
+ };
+RDebugUtils.currentLine=1507358;
+ //BA.debugLineNum = 1507358;BA.debugLine="For i = 0 To drawShape.Size - 2";
+{
+final int step24 = 1;
+final int limit24 = (int) (_drawshape.getSize()-2);
+_i = (int) (0) ;
+for (;_i <= limit24 ;_i = _i + step24 ) {
+RDebugUtils.currentLine=1507359;
+ //BA.debugLineNum = 1507359;BA.debugLine="Dim p1 As Map = drawShape.Get(i)";
+_p1 = new anywheresoftware.b4a.objects.collections.Map();
+_p1 = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(_drawshape.Get(_i)));
+RDebugUtils.currentLine=1507360;
+ //BA.debugLineNum = 1507360;BA.debugLine="Dim p2 As Map = drawShape.Get(i + 1)";
+_p2 = new anywheresoftware.b4a.objects.collections.Map();
+_p2 = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(_drawshape.Get((int) (_i+1))));
+RDebugUtils.currentLine=1507362;
+ //BA.debugLineNum = 1507362;BA.debugLine="Dim ix1 As Float = p1.Get(\"x\")";
+_ix1 = (float)(BA.ObjectToNumber(_p1.Get((Object)("x"))));
+RDebugUtils.currentLine=1507363;
+ //BA.debugLineNum = 1507363;BA.debugLine="Dim iy1 As Float = p1.Get(\"y\")";
+_iy1 = (float)(BA.ObjectToNumber(_p1.Get((Object)("y"))));
+RDebugUtils.currentLine=1507364;
+ //BA.debugLineNum = 1507364;BA.debugLine="Dim ix2 As Float = p2.Get(\"x\")";
+_ix2 = (float)(BA.ObjectToNumber(_p2.Get((Object)("x"))));
+RDebugUtils.currentLine=1507365;
+ //BA.debugLineNum = 1507365;BA.debugLine="Dim iy2 As Float = p2.Get(\"y\")";
+_iy2 = (float)(BA.ObjectToNumber(_p2.Get((Object)("y"))));
+RDebugUtils.currentLine=1507367;
+ //BA.debugLineNum = 1507367;BA.debugLine="Dim x1 As Float = (ix1 - cx) * scale + halfW";
+_x1 = (float) ((_ix1-_cx)*_scale+_halfw);
+RDebugUtils.currentLine=1507368;
+ //BA.debugLineNum = 1507368;BA.debugLine="Dim y1 As Float = (iy1 - cy) * scale + halfH";
+_y1 = (float) ((_iy1-_cy)*_scale+_halfh);
+RDebugUtils.currentLine=1507369;
+ //BA.debugLineNum = 1507369;BA.debugLine="Dim x2 As Float = (ix2 - cx) * scale + halfW";
+_x2 = (float) ((_ix2-_cx)*_scale+_halfw);
+RDebugUtils.currentLine=1507370;
+ //BA.debugLineNum = 1507370;BA.debugLine="Dim y2 As Float = (iy2 - cy) * scale + halfH";
+_y2 = (float) ((_iy2-_cy)*_scale+_halfh);
+RDebugUtils.currentLine=1507372;
+ //BA.debugLineNum = 1507372;BA.debugLine="Canvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(80";
+_canvas.DrawLine(_x1,_y1,_x2,_y2,anywheresoftware.b4a.keywords.Common.Colors.ARGB((int) (80),(int) (0),(int) (120),(int) (255)),(float) (16));
+RDebugUtils.currentLine=1507373;
+ //BA.debugLineNum = 1507373;BA.debugLine="Canvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(22";
+_canvas.DrawLine(_x1,_y1,_x2,_y2,anywheresoftware.b4a.keywords.Common.Colors.ARGB((int) (220),(int) (0),(int) (120),(int) (255)),(float) (8));
+ }
+};
+ }
+};
+ };
+RDebugUtils.currentLine=1507379;
+ //BA.debugLineNum = 1507379;BA.debugLine="For Each nodeId As String In Nodes.Keys";
+{
+final anywheresoftware.b4a.BA.IterableList group40 = mostCurrent._nodes.Keys();
+final int groupLen40 = group40.getSize()
+;int index40 = 0;
+;
+for (; index40 < groupLen40;index40++){
+_nodeid = BA.ObjectToString(group40.Get(index40));
+RDebugUtils.currentLine=1507380;
+ //BA.debugLineNum = 1507380;BA.debugLine="Dim node As Map = Nodes.Get(nodeId)";
+_node = new anywheresoftware.b4a.objects.collections.Map();
+_node = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(mostCurrent._nodes.Get((Object)(_nodeid))));
+RDebugUtils.currentLine=1507381;
+ //BA.debugLineNum = 1507381;BA.debugLine="Dim x As Float = (node.Get(\"x\") - cx) * scale +";
+_x = (float) (((double)(BA.ObjectToNumber(_node.Get((Object)("x"))))-_cx)*_scale+_halfw);
+RDebugUtils.currentLine=1507382;
+ //BA.debugLineNum = 1507382;BA.debugLine="Dim y As Float = (node.Get(\"y\") - cy) * scale +";
+_y = (float) (((double)(BA.ObjectToNumber(_node.Get((Object)("y"))))-_cy)*_scale+_halfh);
+RDebugUtils.currentLine=1507385;
+ //BA.debugLineNum = 1507385;BA.debugLine="Dim label As String = node.Get(\"label\")";
+_label = BA.ObjectToString(_node.Get((Object)("label")));
+RDebugUtils.currentLine=1507386;
+ //BA.debugLineNum = 1507386;BA.debugLine="If label = \"\" Then Continue";
+if ((_label).equals("")) { 
+if (true) continue;};
+RDebugUtils.currentLine=1507389;
+ //BA.debugLineNum = 1507389;BA.debugLine="If RouteEdges.Size > 0 Then";
+if (mostCurrent._routeedges.getSize()>0) { 
+RDebugUtils.currentLine=1507390;
+ //BA.debugLineNum = 1507390;BA.debugLine="If nodeId <> StartNode And nodeId <> EndNode Th";
+if ((_nodeid).equals(mostCurrent._startnode) == false && (_nodeid).equals(mostCurrent._endnode) == false) { 
+if (true) continue;};
+ };
+RDebugUtils.currentLine=1507393;
+ //BA.debugLineNum = 1507393;BA.debugLine="Dim fillColor As Int";
+_fillcolor = 0;
+RDebugUtils.currentLine=1507394;
+ //BA.debugLineNum = 1507394;BA.debugLine="If nodeId = StartNode Then";
+if ((_nodeid).equals(mostCurrent._startnode)) { 
+RDebugUtils.currentLine=1507395;
+ //BA.debugLineNum = 1507395;BA.debugLine="fillColor = Colors.Green";
+_fillcolor = anywheresoftware.b4a.keywords.Common.Colors.Green;
+ }else 
+{RDebugUtils.currentLine=1507396;
+ //BA.debugLineNum = 1507396;BA.debugLine="Else If nodeId = EndNode Then";
+if ((_nodeid).equals(mostCurrent._endnode)) { 
+RDebugUtils.currentLine=1507397;
+ //BA.debugLineNum = 1507397;BA.debugLine="fillColor = Colors.Red";
+_fillcolor = anywheresoftware.b4a.keywords.Common.Colors.Red;
+ }else {
+RDebugUtils.currentLine=1507399;
+ //BA.debugLineNum = 1507399;BA.debugLine="fillColor = Colors.ARGB(200, 30, 100, 255)";
+_fillcolor = anywheresoftware.b4a.keywords.Common.Colors.ARGB((int) (200),(int) (30),(int) (100),(int) (255));
+ }}
+;
+RDebugUtils.currentLine=1507402;
+ //BA.debugLineNum = 1507402;BA.debugLine="Canvas.DrawCircle(x, y, 8, Colors.White, True, 0";
+_canvas.DrawCircle(_x,_y,(float) (8),anywheresoftware.b4a.keywords.Common.Colors.White,anywheresoftware.b4a.keywords.Common.True,(float) (0));
+RDebugUtils.currentLine=1507403;
+ //BA.debugLineNum = 1507403;BA.debugLine="Canvas.DrawCircle(x, y, 8, fillColor, True, 0)";
+_canvas.DrawCircle(_x,_y,(float) (8),_fillcolor,anywheresoftware.b4a.keywords.Common.True,(float) (0));
+ }
+};
+RDebugUtils.currentLine=1507405;
+ //BA.debugLineNum = 1507405;BA.debugLine="End Sub";
+return "";
+}
 public static String  _parsenodes(anywheresoftware.b4a.objects.collections.Map _root) throws Exception{
 RDebugUtils.currentModule="main";
 if (Debug.shouldDelegate(mostCurrent.activityBA, "parsenodes", false))
@@ -921,7 +1329,7 @@ RDebugUtils.currentLine=393217;
 if (_root.ContainsKey((Object)("nodes"))==anywheresoftware.b4a.keywords.Common.False) { 
 RDebugUtils.currentLine=393218;
  //BA.debugLineNum = 393218;BA.debugLine="Log(\"ERROR: no nodes key found in JSON\")";
-anywheresoftware.b4a.keywords.Common.LogImpl("8393218","ERROR: no nodes key found in JSON",0);
+anywheresoftware.b4a.keywords.Common.LogImpl("4393218","ERROR: no nodes key found in JSON",0);
 RDebugUtils.currentLine=393219;
  //BA.debugLineNum = 393219;BA.debugLine="Return";
 if (true) return "";
@@ -937,7 +1345,7 @@ RDebugUtils.currentLine=393225;
 if (_nodearray== null) { 
 RDebugUtils.currentLine=393226;
  //BA.debugLineNum = 393226;BA.debugLine="Log(\"ERROR: nodes array is null\")";
-anywheresoftware.b4a.keywords.Common.LogImpl("8393226","ERROR: nodes array is null",0);
+anywheresoftware.b4a.keywords.Common.LogImpl("4393226","ERROR: nodes array is null",0);
 RDebugUtils.currentLine=393227;
  //BA.debugLineNum = 393227;BA.debugLine="Return";
 if (true) return "";
@@ -959,13 +1367,13 @@ RDebugUtils.currentLine=393232;
  //BA.debugLineNum = 393232;BA.debugLine="n.Initialize";
 _n.Initialize();
 RDebugUtils.currentLine=393233;
- //BA.debugLineNum = 393233;BA.debugLine="n.Put(\"id\", nodeObj.Get(\"id\"))";
+ //BA.debugLineNum = 393233;BA.debugLine="n.Put(\"id\",    nodeObj.Get(\"id\"))";
 _n.Put((Object)("id"),_nodeobj.Get((Object)("id")));
 RDebugUtils.currentLine=393234;
- //BA.debugLineNum = 393234;BA.debugLine="n.Put(\"x\",  nodeObj.Get(\"x\"))";
+ //BA.debugLineNum = 393234;BA.debugLine="n.Put(\"x\",     nodeObj.Get(\"x\"))";
 _n.Put((Object)("x"),_nodeobj.Get((Object)("x")));
 RDebugUtils.currentLine=393235;
- //BA.debugLineNum = 393235;BA.debugLine="n.Put(\"y\",  nodeObj.Get(\"y\"))";
+ //BA.debugLineNum = 393235;BA.debugLine="n.Put(\"y\",     nodeObj.Get(\"y\"))";
 _n.Put((Object)("y"),_nodeobj.Get((Object)("y")));
 RDebugUtils.currentLine=393236;
  //BA.debugLineNum = 393236;BA.debugLine="n.Put(\"label\", nodeObj.Get(\"label\"))";
@@ -974,8 +1382,8 @@ RDebugUtils.currentLine=393237;
  //BA.debugLineNum = 393237;BA.debugLine="Nodes.Put(nodeObj.Get(\"id\"), n)";
 mostCurrent._nodes.Put(_nodeobj.Get((Object)("id")),(Object)(_n.getObject()));
 RDebugUtils.currentLine=393238;
- //BA.debugLineNum = 393238;BA.debugLine="Log(\"Node: \" & nodeObj.Get(\"id\"))";
-anywheresoftware.b4a.keywords.Common.LogImpl("8393238","Node: "+BA.ObjectToString(_nodeobj.Get((Object)("id"))),0);
+ //BA.debugLineNum = 393238;BA.debugLine="Log(\"Node: \" & nodeObj.Get(\"id\") & \" at (\" & nod";
+anywheresoftware.b4a.keywords.Common.LogImpl("4393238","Node: "+BA.ObjectToString(_nodeobj.Get((Object)("id")))+" at ("+BA.ObjectToString(_nodeobj.Get((Object)("x")))+","+BA.ObjectToString(_nodeobj.Get((Object)("y")))+")",0);
  }
 };
 RDebugUtils.currentLine=393240;
@@ -1002,7 +1410,7 @@ RDebugUtils.currentLine=458753;
 if (_root.ContainsKey((Object)("edges"))==anywheresoftware.b4a.keywords.Common.False) { 
 RDebugUtils.currentLine=458754;
  //BA.debugLineNum = 458754;BA.debugLine="Log(\"ERROR: no edges key found in JSON\")";
-anywheresoftware.b4a.keywords.Common.LogImpl("8458754","ERROR: no edges key found in JSON",0);
+anywheresoftware.b4a.keywords.Common.LogImpl("4458754","ERROR: no edges key found in JSON",0);
 RDebugUtils.currentLine=458755;
  //BA.debugLineNum = 458755;BA.debugLine="Return";
 if (true) return "";
@@ -1018,7 +1426,7 @@ RDebugUtils.currentLine=458761;
 if (_edgearray== null) { 
 RDebugUtils.currentLine=458762;
  //BA.debugLineNum = 458762;BA.debugLine="Log(\"ERROR: edges array is null\")";
-anywheresoftware.b4a.keywords.Common.LogImpl("8458762","ERROR: edges array is null",0);
+anywheresoftware.b4a.keywords.Common.LogImpl("4458762","ERROR: edges array is null",0);
 RDebugUtils.currentLine=458763;
  //BA.debugLineNum = 458763;BA.debugLine="Return";
 if (true) return "";
@@ -1051,52 +1459,52 @@ _e.Put((Object)("to"),_edgeobj.Get((Object)("to")));
 RDebugUtils.currentLine=458772;
  //BA.debugLineNum = 458772;BA.debugLine="e.Put(\"weight\", edgeObj.Get(\"weight\"))";
 _e.Put((Object)("weight"),_edgeobj.Get((Object)("weight")));
-RDebugUtils.currentLine=458775;
- //BA.debugLineNum = 458775;BA.debugLine="If edgeObj.ContainsKey(\"shape\") = False Then";
+RDebugUtils.currentLine=458774;
+ //BA.debugLineNum = 458774;BA.debugLine="If edgeObj.ContainsKey(\"shape\") = False Then";
 if (_edgeobj.ContainsKey((Object)("shape"))==anywheresoftware.b4a.keywords.Common.False) { 
+RDebugUtils.currentLine=458775;
+ //BA.debugLineNum = 458775;BA.debugLine="Log(\"WARNING: edge \" & edgeObj.Get(\"id\") & \" ha";
+anywheresoftware.b4a.keywords.Common.LogImpl("4458775","WARNING: edge "+BA.ObjectToString(_edgeobj.Get((Object)("id")))+" has no shape points",0);
 RDebugUtils.currentLine=458776;
- //BA.debugLineNum = 458776;BA.debugLine="Log(\"WARNING: edge \" & edgeObj.Get(\"id\") & \" ha";
-anywheresoftware.b4a.keywords.Common.LogImpl("8458776","WARNING: edge "+BA.ObjectToString(_edgeobj.Get((Object)("id")))+" has no shape points",0);
-RDebugUtils.currentLine=458777;
- //BA.debugLineNum = 458777;BA.debugLine="Dim emptyShape As List : emptyShape.Initialize";
+ //BA.debugLineNum = 458776;BA.debugLine="Dim emptyShape As List : emptyShape.Initialize";
 _emptyshape = new anywheresoftware.b4a.objects.collections.List();
-RDebugUtils.currentLine=458777;
- //BA.debugLineNum = 458777;BA.debugLine="Dim emptyShape As List : emptyShape.Initialize";
+RDebugUtils.currentLine=458776;
+ //BA.debugLineNum = 458776;BA.debugLine="Dim emptyShape As List : emptyShape.Initialize";
 _emptyshape.Initialize();
-RDebugUtils.currentLine=458778;
- //BA.debugLineNum = 458778;BA.debugLine="e.Put(\"shape\", emptyShape)";
+RDebugUtils.currentLine=458777;
+ //BA.debugLineNum = 458777;BA.debugLine="e.Put(\"shape\", emptyShape)";
 _e.Put((Object)("shape"),(Object)(_emptyshape.getObject()));
  }else {
-RDebugUtils.currentLine=458780;
- //BA.debugLineNum = 458780;BA.debugLine="Dim shapeArray As List";
+RDebugUtils.currentLine=458779;
+ //BA.debugLineNum = 458779;BA.debugLine="Dim shapeArray As List";
 _shapearray = new anywheresoftware.b4a.objects.collections.List();
-RDebugUtils.currentLine=458781;
- //BA.debugLineNum = 458781;BA.debugLine="shapeArray = edgeObj.Get(\"shape\")";
+RDebugUtils.currentLine=458780;
+ //BA.debugLineNum = 458780;BA.debugLine="shapeArray = edgeObj.Get(\"shape\")";
 _shapearray = (anywheresoftware.b4a.objects.collections.List) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.List(), (java.util.List)(_edgeobj.Get((Object)("shape"))));
-RDebugUtils.currentLine=458783;
- //BA.debugLineNum = 458783;BA.debugLine="If shapeArray = Null Then";
+RDebugUtils.currentLine=458782;
+ //BA.debugLineNum = 458782;BA.debugLine="If shapeArray = Null Then";
 if (_shapearray== null) { 
+RDebugUtils.currentLine=458783;
+ //BA.debugLineNum = 458783;BA.debugLine="Log(\"WARNING: shape is null for edge \" & edgeO";
+anywheresoftware.b4a.keywords.Common.LogImpl("4458783","WARNING: shape is null for edge "+BA.ObjectToString(_edgeobj.Get((Object)("id"))),0);
 RDebugUtils.currentLine=458784;
- //BA.debugLineNum = 458784;BA.debugLine="Log(\"WARNING: shape is null for edge \" & edgeO";
-anywheresoftware.b4a.keywords.Common.LogImpl("8458784","WARNING: shape is null for edge "+BA.ObjectToString(_edgeobj.Get((Object)("id"))),0);
-RDebugUtils.currentLine=458785;
- //BA.debugLineNum = 458785;BA.debugLine="Dim emptyShape2 As List : emptyShape2.Initiali";
+ //BA.debugLineNum = 458784;BA.debugLine="Dim emptyShape2 As List : emptyShape2.Initiali";
 _emptyshape2 = new anywheresoftware.b4a.objects.collections.List();
-RDebugUtils.currentLine=458785;
- //BA.debugLineNum = 458785;BA.debugLine="Dim emptyShape2 As List : emptyShape2.Initiali";
+RDebugUtils.currentLine=458784;
+ //BA.debugLineNum = 458784;BA.debugLine="Dim emptyShape2 As List : emptyShape2.Initiali";
 _emptyshape2.Initialize();
-RDebugUtils.currentLine=458786;
- //BA.debugLineNum = 458786;BA.debugLine="e.Put(\"shape\", emptyShape2)";
+RDebugUtils.currentLine=458785;
+ //BA.debugLineNum = 458785;BA.debugLine="e.Put(\"shape\", emptyShape2)";
 _e.Put((Object)("shape"),(Object)(_emptyshape2.getObject()));
  }else {
-RDebugUtils.currentLine=458788;
- //BA.debugLineNum = 458788;BA.debugLine="Dim shape As List";
+RDebugUtils.currentLine=458787;
+ //BA.debugLineNum = 458787;BA.debugLine="Dim shape As List";
 _shape = new anywheresoftware.b4a.objects.collections.List();
-RDebugUtils.currentLine=458789;
- //BA.debugLineNum = 458789;BA.debugLine="shape.Initialize";
+RDebugUtils.currentLine=458788;
+ //BA.debugLineNum = 458788;BA.debugLine="shape.Initialize";
 _shape.Initialize();
-RDebugUtils.currentLine=458790;
- //BA.debugLineNum = 458790;BA.debugLine="For Each pointObj As Map In shapeArray";
+RDebugUtils.currentLine=458789;
+ //BA.debugLineNum = 458789;BA.debugLine="For Each pointObj As Map In shapeArray";
 _pointobj = new anywheresoftware.b4a.objects.collections.Map();
 {
 final anywheresoftware.b4a.BA.IterableList group34 = _shapearray;
@@ -1105,358 +1513,38 @@ final int groupLen34 = group34.getSize()
 ;
 for (; index34 < groupLen34;index34++){
 _pointobj = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(group34.Get(index34)));
-RDebugUtils.currentLine=458791;
- //BA.debugLineNum = 458791;BA.debugLine="Dim p As Map";
+RDebugUtils.currentLine=458790;
+ //BA.debugLineNum = 458790;BA.debugLine="Dim p As Map";
 _p = new anywheresoftware.b4a.objects.collections.Map();
-RDebugUtils.currentLine=458792;
- //BA.debugLineNum = 458792;BA.debugLine="p.Initialize";
+RDebugUtils.currentLine=458791;
+ //BA.debugLineNum = 458791;BA.debugLine="p.Initialize";
 _p.Initialize();
-RDebugUtils.currentLine=458793;
- //BA.debugLineNum = 458793;BA.debugLine="p.Put(\"x\", pointObj.Get(\"x\"))";
+RDebugUtils.currentLine=458792;
+ //BA.debugLineNum = 458792;BA.debugLine="p.Put(\"x\", pointObj.Get(\"x\"))";
 _p.Put((Object)("x"),_pointobj.Get((Object)("x")));
-RDebugUtils.currentLine=458794;
- //BA.debugLineNum = 458794;BA.debugLine="p.Put(\"y\", pointObj.Get(\"y\"))";
+RDebugUtils.currentLine=458793;
+ //BA.debugLineNum = 458793;BA.debugLine="p.Put(\"y\", pointObj.Get(\"y\"))";
 _p.Put((Object)("y"),_pointobj.Get((Object)("y")));
-RDebugUtils.currentLine=458795;
- //BA.debugLineNum = 458795;BA.debugLine="shape.Add(p)";
+RDebugUtils.currentLine=458794;
+ //BA.debugLineNum = 458794;BA.debugLine="shape.Add(p)";
 _shape.Add((Object)(_p.getObject()));
  }
 };
-RDebugUtils.currentLine=458797;
- //BA.debugLineNum = 458797;BA.debugLine="e.Put(\"shape\", shape)";
+RDebugUtils.currentLine=458796;
+ //BA.debugLineNum = 458796;BA.debugLine="e.Put(\"shape\", shape)";
 _e.Put((Object)("shape"),(Object)(_shape.getObject()));
  };
  };
-RDebugUtils.currentLine=458801;
- //BA.debugLineNum = 458801;BA.debugLine="Edges.Add(e)";
+RDebugUtils.currentLine=458800;
+ //BA.debugLineNum = 458800;BA.debugLine="Edges.Add(e)";
 mostCurrent._edges.Add((Object)(_e.getObject()));
-RDebugUtils.currentLine=458802;
- //BA.debugLineNum = 458802;BA.debugLine="Log(\"Edge: \" & edgeObj.Get(\"id\") & \" (\" & edgeOb";
-anywheresoftware.b4a.keywords.Common.LogImpl("8458802","Edge: "+BA.ObjectToString(_edgeobj.Get((Object)("id")))+" ("+BA.ObjectToString(_edgeobj.Get((Object)("from")))+" -> "+BA.ObjectToString(_edgeobj.Get((Object)("to")))+") shape pts: "+BA.ObjectToString(_e.Get((Object)("shape"))),0);
+RDebugUtils.currentLine=458801;
+ //BA.debugLineNum = 458801;BA.debugLine="Log(\"Edge: \" & edgeObj.Get(\"id\") & \" (\" & edgeOb";
+anywheresoftware.b4a.keywords.Common.LogImpl("4458801","Edge: "+BA.ObjectToString(_edgeobj.Get((Object)("id")))+" ("+BA.ObjectToString(_edgeobj.Get((Object)("from")))+" -> "+BA.ObjectToString(_edgeobj.Get((Object)("to")))+")",0);
  }
 };
-RDebugUtils.currentLine=458804;
- //BA.debugLineNum = 458804;BA.debugLine="End Sub";
-return "";
-}
-public static String  _overlaypanel_touch(int _action,float _x,float _y) throws Exception{
-RDebugUtils.currentModule="main";
-if (Debug.shouldDelegate(mostCurrent.activityBA, "overlaypanel_touch", false))
-	 {return ((String) Debug.delegate(mostCurrent.activityBA, "overlaypanel_touch", new Object[] {_action,_x,_y}));}
-String _tappedid = "";
-RDebugUtils.currentLine=917504;
- //BA.debugLineNum = 917504;BA.debugLine="Sub OverlayPanel_Touch(Action As Int, X As Float,";
-RDebugUtils.currentLine=917505;
- //BA.debugLineNum = 917505;BA.debugLine="If Action = 1 Then";
-if (_action==1) { 
-RDebugUtils.currentLine=917506;
- //BA.debugLineNum = 917506;BA.debugLine="Dim tappedId As String = GetNodeAtPosition(X, Y,";
-_tappedid = _getnodeatposition(_x,_y,(int) (30));
-RDebugUtils.currentLine=917507;
- //BA.debugLineNum = 917507;BA.debugLine="If tappedId = \"\" Then Return";
-if ((_tappedid).equals("")) { 
-if (true) return "";};
-RDebugUtils.currentLine=917509;
- //BA.debugLineNum = 917509;BA.debugLine="If StartNode = \"\" Then";
-if ((mostCurrent._startnode).equals("")) { 
-RDebugUtils.currentLine=917510;
- //BA.debugLineNum = 917510;BA.debugLine="StartNode = tappedId";
-mostCurrent._startnode = _tappedid;
-RDebugUtils.currentLine=917511;
- //BA.debugLineNum = 917511;BA.debugLine="Log(\"Start set: \" & StartNode)";
-anywheresoftware.b4a.keywords.Common.LogImpl("8917511","Start set: "+mostCurrent._startnode,0);
-RDebugUtils.currentLine=917512;
- //BA.debugLineNum = 917512;BA.debugLine="DrawOverlay";
-_drawoverlay();
- }else 
-{RDebugUtils.currentLine=917514;
- //BA.debugLineNum = 917514;BA.debugLine="Else If EndNode = \"\" And tappedId <> StartNode T";
-if ((mostCurrent._endnode).equals("") && (_tappedid).equals(mostCurrent._startnode) == false) { 
-RDebugUtils.currentLine=917515;
- //BA.debugLineNum = 917515;BA.debugLine="EndNode = tappedId";
-mostCurrent._endnode = _tappedid;
-RDebugUtils.currentLine=917516;
- //BA.debugLineNum = 917516;BA.debugLine="Log(\"End set: \" & EndNode)";
-anywheresoftware.b4a.keywords.Common.LogImpl("8917516","End set: "+mostCurrent._endnode,0);
-RDebugUtils.currentLine=917517;
- //BA.debugLineNum = 917517;BA.debugLine="RunDijkstra(StartNode, EndNode)";
-_rundijkstra(mostCurrent._startnode,mostCurrent._endnode);
- }else {
-RDebugUtils.currentLine=917520;
- //BA.debugLineNum = 917520;BA.debugLine="StartNode  = tappedId";
-mostCurrent._startnode = _tappedid;
-RDebugUtils.currentLine=917521;
- //BA.debugLineNum = 917521;BA.debugLine="EndNode    = \"\"";
-mostCurrent._endnode = "";
-RDebugUtils.currentLine=917522;
- //BA.debugLineNum = 917522;BA.debugLine="RouteEdges.Initialize";
-mostCurrent._routeedges.Initialize();
-RDebugUtils.currentLine=917523;
- //BA.debugLineNum = 917523;BA.debugLine="Log(\"Reset. New start: \" & StartNode)";
-anywheresoftware.b4a.keywords.Common.LogImpl("8917523","Reset. New start: "+mostCurrent._startnode,0);
-RDebugUtils.currentLine=917524;
- //BA.debugLineNum = 917524;BA.debugLine="DrawOverlay";
-_drawoverlay();
- }}
-;
- };
-RDebugUtils.currentLine=917527;
- //BA.debugLineNum = 917527;BA.debugLine="End Sub";
-return "";
-}
-public static String  _rundijkstra(String _startid,String _endid) throws Exception{
-RDebugUtils.currentModule="main";
-if (Debug.shouldDelegate(mostCurrent.activityBA, "rundijkstra", false))
-	 {return ((String) Debug.delegate(mostCurrent.activityBA, "rundijkstra", new Object[] {_startid,_endid}));}
-anywheresoftware.b4a.objects.collections.Map _dist = null;
-anywheresoftware.b4a.objects.collections.Map _prev = null;
-anywheresoftware.b4a.objects.collections.Map _visited = null;
-String _nodeid = "";
-String _current = "";
-int _mindist = 0;
-int _d = 0;
-anywheresoftware.b4a.objects.collections.List _neighbors = null;
-anywheresoftware.b4a.objects.collections.Map _conn = null;
-String _neighbor = "";
-int _currdist = 0;
-int _neighbordist = 0;
-int _edgeweight = 0;
-int _newdist = 0;
-anywheresoftware.b4a.objects.collections.List _path = null;
-String _steps = "";
-String _prevval = "";
-anywheresoftware.b4a.objects.collections.List _reversed = null;
-int _i = 0;
-String _fromid = "";
-String _toid = "";
-Object _found = null;
-RDebugUtils.currentLine=589824;
- //BA.debugLineNum = 589824;BA.debugLine="Sub RunDijkstra(startId As String, endId As String";
-RDebugUtils.currentLine=589825;
- //BA.debugLineNum = 589825;BA.debugLine="Dim dist    As Map : dist.Initialize";
-_dist = new anywheresoftware.b4a.objects.collections.Map();
-RDebugUtils.currentLine=589825;
- //BA.debugLineNum = 589825;BA.debugLine="Dim dist    As Map : dist.Initialize";
-_dist.Initialize();
-RDebugUtils.currentLine=589826;
- //BA.debugLineNum = 589826;BA.debugLine="Dim prev    As Map : prev.Initialize";
-_prev = new anywheresoftware.b4a.objects.collections.Map();
-RDebugUtils.currentLine=589826;
- //BA.debugLineNum = 589826;BA.debugLine="Dim prev    As Map : prev.Initialize";
-_prev.Initialize();
-RDebugUtils.currentLine=589827;
- //BA.debugLineNum = 589827;BA.debugLine="Dim visited As Map : visited.Initialize";
-_visited = new anywheresoftware.b4a.objects.collections.Map();
-RDebugUtils.currentLine=589827;
- //BA.debugLineNum = 589827;BA.debugLine="Dim visited As Map : visited.Initialize";
-_visited.Initialize();
-RDebugUtils.currentLine=589829;
- //BA.debugLineNum = 589829;BA.debugLine="For Each nodeId As String In Nodes.Keys";
-{
-final anywheresoftware.b4a.BA.IterableList group7 = mostCurrent._nodes.Keys();
-final int groupLen7 = group7.getSize()
-;int index7 = 0;
-;
-for (; index7 < groupLen7;index7++){
-_nodeid = BA.ObjectToString(group7.Get(index7));
-RDebugUtils.currentLine=589830;
- //BA.debugLineNum = 589830;BA.debugLine="dist.Put(nodeId, 999999)";
-_dist.Put((Object)(_nodeid),(Object)(999999));
-RDebugUtils.currentLine=589831;
- //BA.debugLineNum = 589831;BA.debugLine="prev.Put(nodeId, \"\")";
-_prev.Put((Object)(_nodeid),(Object)(""));
- }
-};
-RDebugUtils.currentLine=589833;
- //BA.debugLineNum = 589833;BA.debugLine="dist.Put(startId, 0)";
-_dist.Put((Object)(_startid),(Object)(0));
-RDebugUtils.currentLine=589835;
- //BA.debugLineNum = 589835;BA.debugLine="Do While True";
-while (anywheresoftware.b4a.keywords.Common.True) {
-RDebugUtils.currentLine=589836;
- //BA.debugLineNum = 589836;BA.debugLine="Dim current As String = \"\"";
-_current = "";
-RDebugUtils.currentLine=589837;
- //BA.debugLineNum = 589837;BA.debugLine="Dim minDist As Int = 999999";
-_mindist = (int) (999999);
-RDebugUtils.currentLine=589839;
- //BA.debugLineNum = 589839;BA.debugLine="For Each nodeId As String In Nodes.Keys";
-{
-final anywheresoftware.b4a.BA.IterableList group15 = mostCurrent._nodes.Keys();
-final int groupLen15 = group15.getSize()
-;int index15 = 0;
-;
-for (; index15 < groupLen15;index15++){
-_nodeid = BA.ObjectToString(group15.Get(index15));
-RDebugUtils.currentLine=589840;
- //BA.debugLineNum = 589840;BA.debugLine="If visited.ContainsKey(nodeId) = False Then";
-if (_visited.ContainsKey((Object)(_nodeid))==anywheresoftware.b4a.keywords.Common.False) { 
-RDebugUtils.currentLine=589841;
- //BA.debugLineNum = 589841;BA.debugLine="Dim d As Int = dist.Get(nodeId)";
-_d = (int)(BA.ObjectToNumber(_dist.Get((Object)(_nodeid))));
-RDebugUtils.currentLine=589842;
- //BA.debugLineNum = 589842;BA.debugLine="If d < minDist Then";
-if (_d<_mindist) { 
-RDebugUtils.currentLine=589843;
- //BA.debugLineNum = 589843;BA.debugLine="minDist = d";
-_mindist = _d;
-RDebugUtils.currentLine=589844;
- //BA.debugLineNum = 589844;BA.debugLine="current = nodeId";
-_current = _nodeid;
- };
- };
- }
-};
-RDebugUtils.currentLine=589849;
- //BA.debugLineNum = 589849;BA.debugLine="If current = \"\" Or current = endId Then Exit";
-if ((_current).equals("") || (_current).equals(_endid)) { 
-if (true) break;};
-RDebugUtils.currentLine=589851;
- //BA.debugLineNum = 589851;BA.debugLine="visited.Put(current, True)";
-_visited.Put((Object)(_current),(Object)(anywheresoftware.b4a.keywords.Common.True));
-RDebugUtils.currentLine=589853;
- //BA.debugLineNum = 589853;BA.debugLine="If Graph.ContainsKey(current) Then";
-if (mostCurrent._graph.ContainsKey((Object)(_current))) { 
-RDebugUtils.currentLine=589854;
- //BA.debugLineNum = 589854;BA.debugLine="Dim neighbors As List = Graph.Get(current)";
-_neighbors = new anywheresoftware.b4a.objects.collections.List();
-_neighbors = (anywheresoftware.b4a.objects.collections.List) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.List(), (java.util.List)(mostCurrent._graph.Get((Object)(_current))));
-RDebugUtils.currentLine=589855;
- //BA.debugLineNum = 589855;BA.debugLine="For Each conn As Map In neighbors";
-_conn = new anywheresoftware.b4a.objects.collections.Map();
-{
-final anywheresoftware.b4a.BA.IterableList group28 = _neighbors;
-final int groupLen28 = group28.getSize()
-;int index28 = 0;
-;
-for (; index28 < groupLen28;index28++){
-_conn = (anywheresoftware.b4a.objects.collections.Map) anywheresoftware.b4a.AbsObjectWrapper.ConvertToWrapper(new anywheresoftware.b4a.objects.collections.Map(), (java.util.Map)(group28.Get(index28)));
-RDebugUtils.currentLine=589856;
- //BA.debugLineNum = 589856;BA.debugLine="Dim neighbor     As String = conn.Get(\"neighbo";
-_neighbor = BA.ObjectToString(_conn.Get((Object)("neighbor")));
-RDebugUtils.currentLine=589857;
- //BA.debugLineNum = 589857;BA.debugLine="Dim currDist     As Int    = dist.Get(current)";
-_currdist = (int)(BA.ObjectToNumber(_dist.Get((Object)(_current))));
-RDebugUtils.currentLine=589858;
- //BA.debugLineNum = 589858;BA.debugLine="Dim neighborDist As Int    = dist.Get(neighbor";
-_neighbordist = (int)(BA.ObjectToNumber(_dist.Get((Object)(_neighbor))));
-RDebugUtils.currentLine=589859;
- //BA.debugLineNum = 589859;BA.debugLine="Dim edgeWeight   As Int    = conn.Get(\"weight\"";
-_edgeweight = (int)(BA.ObjectToNumber(_conn.Get((Object)("weight"))));
-RDebugUtils.currentLine=589860;
- //BA.debugLineNum = 589860;BA.debugLine="Dim newDist      As Int    = currDist + edgeWe";
-_newdist = (int) (_currdist+_edgeweight);
-RDebugUtils.currentLine=589861;
- //BA.debugLineNum = 589861;BA.debugLine="If newDist < neighborDist Then";
-if (_newdist<_neighbordist) { 
-RDebugUtils.currentLine=589862;
- //BA.debugLineNum = 589862;BA.debugLine="dist.Put(neighbor, newDist)";
-_dist.Put((Object)(_neighbor),(Object)(_newdist));
-RDebugUtils.currentLine=589863;
- //BA.debugLineNum = 589863;BA.debugLine="prev.Put(neighbor, current)";
-_prev.Put((Object)(_neighbor),(Object)(_current));
- };
- }
-};
- };
- }
-;
-RDebugUtils.currentLine=589869;
- //BA.debugLineNum = 589869;BA.debugLine="Dim path As List : path.Initialize";
-_path = new anywheresoftware.b4a.objects.collections.List();
-RDebugUtils.currentLine=589869;
- //BA.debugLineNum = 589869;BA.debugLine="Dim path As List : path.Initialize";
-_path.Initialize();
-RDebugUtils.currentLine=589870;
- //BA.debugLineNum = 589870;BA.debugLine="Dim steps As String";
-_steps = "";
-RDebugUtils.currentLine=589871;
- //BA.debugLineNum = 589871;BA.debugLine="steps = endId";
-_steps = _endid;
-RDebugUtils.currentLine=589872;
- //BA.debugLineNum = 589872;BA.debugLine="Do While steps <> \"\"";
-while ((_steps).equals("") == false) {
-RDebugUtils.currentLine=589873;
- //BA.debugLineNum = 589873;BA.debugLine="path.Add(steps)";
-_path.Add((Object)(_steps));
-RDebugUtils.currentLine=589874;
- //BA.debugLineNum = 589874;BA.debugLine="If prev.ContainsKey(steps) = False Then";
-if (_prev.ContainsKey((Object)(_steps))==anywheresoftware.b4a.keywords.Common.False) { 
-RDebugUtils.currentLine=589875;
- //BA.debugLineNum = 589875;BA.debugLine="steps = \"\"";
-_steps = "";
- }else {
-RDebugUtils.currentLine=589877;
- //BA.debugLineNum = 589877;BA.debugLine="Dim prevVal As String = prev.Get(steps)";
-_prevval = BA.ObjectToString(_prev.Get((Object)(_steps)));
-RDebugUtils.currentLine=589878;
- //BA.debugLineNum = 589878;BA.debugLine="If prevVal = Null Or prevVal = \"\" Then";
-if (_prevval== null || (_prevval).equals("")) { 
-RDebugUtils.currentLine=589879;
- //BA.debugLineNum = 589879;BA.debugLine="steps = \"\"";
-_steps = "";
- }else {
-RDebugUtils.currentLine=589881;
- //BA.debugLineNum = 589881;BA.debugLine="steps = prevVal";
-_steps = _prevval;
- };
- };
- }
-;
-RDebugUtils.currentLine=589886;
- //BA.debugLineNum = 589886;BA.debugLine="Dim reversed As List : reversed.Initialize";
-_reversed = new anywheresoftware.b4a.objects.collections.List();
-RDebugUtils.currentLine=589886;
- //BA.debugLineNum = 589886;BA.debugLine="Dim reversed As List : reversed.Initialize";
-_reversed.Initialize();
-RDebugUtils.currentLine=589887;
- //BA.debugLineNum = 589887;BA.debugLine="For i = path.Size - 1 To 0 Step -1";
-{
-final int step60 = -1;
-final int limit60 = (int) (0);
-_i = (int) (_path.getSize()-1) ;
-for (;_i >= limit60 ;_i = _i + step60 ) {
-RDebugUtils.currentLine=589888;
- //BA.debugLineNum = 589888;BA.debugLine="reversed.Add(path.Get(i))";
-_reversed.Add(_path.Get(_i));
- }
-};
-RDebugUtils.currentLine=589891;
- //BA.debugLineNum = 589891;BA.debugLine="RouteEdges.Initialize";
-mostCurrent._routeedges.Initialize();
-RDebugUtils.currentLine=589892;
- //BA.debugLineNum = 589892;BA.debugLine="For i = 0 To reversed.Size - 2";
-{
-final int step64 = 1;
-final int limit64 = (int) (_reversed.getSize()-2);
-_i = (int) (0) ;
-for (;_i <= limit64 ;_i = _i + step64 ) {
-RDebugUtils.currentLine=589893;
- //BA.debugLineNum = 589893;BA.debugLine="Dim fromId As String = reversed.Get(i)";
-_fromid = BA.ObjectToString(_reversed.Get(_i));
-RDebugUtils.currentLine=589894;
- //BA.debugLineNum = 589894;BA.debugLine="Dim toId   As String = reversed.Get(i + 1)";
-_toid = BA.ObjectToString(_reversed.Get((int) (_i+1)));
-RDebugUtils.currentLine=589895;
- //BA.debugLineNum = 589895;BA.debugLine="Dim found  As Object = FindEdge(fromId, toId)";
-_found = _findedge(_fromid,_toid);
-RDebugUtils.currentLine=589896;
- //BA.debugLineNum = 589896;BA.debugLine="If found <> Null Then";
-if (_found!= null) { 
-RDebugUtils.currentLine=589897;
- //BA.debugLineNum = 589897;BA.debugLine="RouteEdges.Add(found)";
-mostCurrent._routeedges.Add(_found);
- };
- }
-};
-RDebugUtils.currentLine=589901;
- //BA.debugLineNum = 589901;BA.debugLine="Log(\"Route found: \" & reversed.Size & \" stops, \"";
-anywheresoftware.b4a.keywords.Common.LogImpl("8589901","Route found: "+BA.NumberToString(_reversed.getSize())+" stops, "+BA.NumberToString(mostCurrent._routeedges.getSize())+" edges",0);
-RDebugUtils.currentLine=589902;
- //BA.debugLineNum = 589902;BA.debugLine="DrawOverlay";
-_drawoverlay();
-RDebugUtils.currentLine=589903;
- //BA.debugLineNum = 589903;BA.debugLine="End Sub";
+RDebugUtils.currentLine=458803;
+ //BA.debugLineNum = 458803;BA.debugLine="End Sub";
 return "";
 }
 }

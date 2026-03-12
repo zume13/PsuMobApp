@@ -1,36 +1,43 @@
 {
-"nodes": [
+  "nodes": [
+    {"id": "ccs",  "x": 1537,  "y": 2175, "label": "College of Computing Studies"},
+    {"id": "cssp", "x": 1515,  "y": 1995, "label": "College of Social Science & Philosophy"},
+    {"id": "chtm", "x": 1389,  "y": 1850, "label": "College of Hospitality & Management"},
+    {"id": "j1",   "x": 1543,  "y": 1989, "label": ""}
+  ],
+  "edges": [
     {
-        "id": "ccs", "x": 1396, "y": 876, "label": "College of Computing Studies"
+      "id": "e1",
+      "from": "ccs",
+      "to": "j1",
+      "weight": 200,
+      "shape": [
+        {"x": 1537, "y": 2175},
+        {"x": 1590, "y": 2163},
+        {"x": 1543, "y": 1989}
+      ]
     },
     {
-        "id": "elecBuilding", "x": 1812, "y": 810, "label": "Electrical Building"
-    }
-],
-"edges": [
+      "id": "e2",
+      "from": "j1",
+      "to": "cssp",
+      "weight": 50,
+      "shape": [
+        {"x": 1543, "y": 1989},
+        {"x": 1515, "y": 1995}
+      ]
+    },
     {
-        "id": "e1",
-        "from": "ccs",
-        "to": "elecBuilding",
-	"weight": 1460,
-        "shape": 
-        [
-            {
-                "x": 1396, "y": 876
-            },
-            {
-                "x": 1414, "y": 937
-            },
-            {
-                "x": 1775, "y": 836
-            },
-            {
-                "x": 1778, "y": 313
-            },
-            {
-                "x": 1812, "y": 810
-            }
-        ]
+      "id": "e3",
+      "from": "j1",
+      "to": "chtm",
+      "weight": 400,
+      "shape": [
+        {"x": 1543, "y": 1989},
+        {"x": 1496, "y": 1803},
+        {"x": 1389, "y": 1826},
+        {"x": 1389, "y": 1850}
+      ]
     }
-]
+  ]
 }

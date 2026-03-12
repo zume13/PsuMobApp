@@ -2,66 +2,58 @@ b4a.example
 0
 0
 0
-main,activity_create,1,0,37,57
-,routeedges,,startnode,,endnode,,mapimage,,imageviewer,,overlaypanel,,overlaycanvas,,nodes,,edges,,graph,,scalex,,scaley
-,startnode,,endnode,,mapimage,,scalex,,scaley
-,loadallmapdata,,drawoverlay,,parsenodes,,parseedges,,buildgraph,,drawroute,,drawnodes
-main,loadallmapdata,0,0,65,83
-,nodes,,edges,,graph
+main,activity_create,1,1,32,46
+,routeedges,,startnode,,endnode,,mapimage,,imageviewer,,nodes,,edges,,graph
+,startnode,,endnode,,mapimage
+,loadallmapdata,,parsenodes,,parseedges,,buildgraph
+main,loadallmapdata,0,0,54,78
+,nodes,,edges,,graph,,imageviewer
 
 ,parsenodes,,parseedges,,buildgraph
-main,drawoverlay,0,0,292,304
-,scalex,,mapimage,,scaley,,overlaycanvas,,overlaypanel,,routeedges,,nodes,,startnode,,endnode
-,scalex,,scaley
-,drawroute,,drawnodes
-main,activity_pause,0,0,62,63
+main,activity_pause,0,0,51,52
 
 
 
-main,activity_resume,0,0,59,60
+main,activity_resume,0,0,48,49
 
 
 
-main,buildgraph,0,0,165,198
+main,buildgraph,0,0,159,192
 ,graph,,edges
 
 
-main,drawnodes,0,0,326,344
-,nodes,,scalex,,scaley,,startnode,,endnode,,overlaycanvas
-
-
-main,drawroute,0,0,306,324
-,routeedges,,scalex,,scaley,,overlaycanvas
-
-
-main,findedge,0,0,281,290
+main,findedge,0,0,282,295
 ,edges
 
 
-main,getnodeatposition,0,0,371,384
-,nodes,,scalex,,scaley
-
-
-main,globals,0,1,19,35
-
-
-
-main,parsenodes,0,0,85,109
+main,getnodeatposition,0,0,404,417
 ,nodes
 
 
-main,parseedges,0,0,111,163
+main,globals,0,1,19,30
+
+
+
+main,imageviewer_click,0,0,376,402
+,imageviewer,,startnode,,endnode,,routeedges,,nodes,,graph,,edges
+,startnode,,endnode
+,getnodeatposition,,rundijkstra,,findedge
+main,rundijkstra,0,0,194,280
+,nodes,,graph,,routeedges,,imageviewer,,edges
+
+,findedge
+main,imageviewer_ondraw,0,0,297,374
+,nodes,,imageviewer,,routeedges,,startnode,,endnode
+
+
+main,parsenodes,0,0,80,104
+,nodes
+
+
+main,parseedges,0,0,106,157
 ,edges
 
 
-main,overlaypanel_touch,0,0,346,369
-,startnode,,endnode,,routeedges,,nodes,,scalex,,scaley,,mapimage,,overlaycanvas,,overlaypanel,,graph,,edges
-,startnode,,endnode,,scalex,,scaley
-,getnodeatposition,,drawoverlay,,rundijkstra,,drawroute,,drawnodes,,findedge
-main,rundijkstra,0,0,200,279
-,nodes,,graph,,routeedges,,edges,,scalex,,mapimage,,scaley,,overlaycanvas,,overlaypanel,,startnode,,endnode
-,scalex,,scaley
-,findedge,,drawoverlay,,drawroute,,drawnodes
 main,process_globals,0,1,15,17
 
 

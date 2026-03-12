@@ -1,8 +1,10 @@
 ﻿Build1=Default,b4a.example
 File1=Layout.bal
 File2=map.png
+File3=mapdata.json
 FileGroup1=Default Group
 FileGroup2=Default Group
+FileGroup3=Default Group
 Group=Default Group
 Library1=core
 Library2=scaleimageview
@@ -10,7 +12,7 @@ Library3=xui
 Library4=json
 ManifestCode='This code will be applied to the manifest file during compilation.~\n~'You do not need to modify it in most cases.~\n~'See this link for for more information: https://www.b4x.com/forum/showthread.php?p=78136~\n~AddManifestText(~\n~<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~'End of default text.~\n~
 Module1=Starter
-NumberOfFiles=2
+NumberOfFiles=3
 NumberOfLibraries=4
 NumberOfModules=1
 Version=13.4
@@ -34,21 +36,16 @@ Sub Process_Globals
 End Sub
 
 Sub Globals
-	Dim MapImage As Bitmap
-	Dim ImageViewer  As ScaleImageView
-	Dim OverlayPanel As Panel
-	Dim OverlayCanvas As Canvas
+	Dim MapImage    As Bitmap
+	Dim ImageViewer As ScaleImageView
 
-	Dim Nodes As Map
-	Dim Edges As List
-	Dim Graph As Map
+	Dim Nodes      As Map
+	Dim Edges      As List
+	Dim Graph      As Map
 	Dim RouteEdges As List
 
 	Dim StartNode As String
-	Dim EndNode As String
-	
-	Dim ScaleX As Float
-	Dim ScaleY As Float
+	Dim EndNode   As String
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -59,18 +56,12 @@ Sub Activity_Create(FirstTime As Boolean)
 	EndNode   = ""
 
 	MapImage = LoadBitmap(File.DirAssets, "map.png")
-
+	
 	ImageViewer.Initialize("ImageViewer")
 	Activity.AddView(ImageViewer, 0, 0, 100%x, 100%y)
 	ImageViewer.Image = MapImage
 
-	OverlayPanel.Initialize("OverlayPanel")
-	Activity.AddView(OverlayPanel, 0, 0, 100%x, 100%y)
-	OverlayPanel.Color = Colors.Transparent
-	OverlayCanvas.Initialize(OverlayPanel)
-
 	LoadAllMapData
-	DrawOverlay
 End Sub
 
 Sub Activity_Resume
@@ -87,16 +78,22 @@ Sub LoadAllMapData
 	Dim raw As String
 	raw = File.ReadString(File.DirAssets, "mapdata.json")
 
+	Log("RAW JSON: " & raw)
+
 	Dim parser As JSONParser
 	parser.Initialize(raw)
 	Dim root As Map
 	root = parser.NextObject
+
+	Log("ROOT KEYS: " & root.Keys)
 
 	ParseNodes(root)
 	ParseEdges(root)
 	BuildGraph
 
 	Log("Map data loaded. Nodes: " & Nodes.Size & " Edges: " & Edges.Size)
+
+	ImageViewer.Invalidate
 End Sub
 
 Sub ParseNodes(root As Map)
@@ -104,10 +101,10 @@ Sub ParseNodes(root As Map)
 		Log("ERROR: no nodes key found in JSON")
 		Return
 	End If
-    
+
 	Dim nodeArray As List
 	nodeArray = root.Get("nodes")
-    
+
 	If nodeArray = Null Then
 		Log("ERROR: nodes array is null")
 		Return
@@ -116,12 +113,12 @@ Sub ParseNodes(root As Map)
 	For Each nodeObj As Map In nodeArray
 		Dim n As Map
 		n.Initialize
-		n.Put("id", nodeObj.Get("id"))
-		n.Put("x",  nodeObj.Get("x"))
-		n.Put("y",  nodeObj.Get("y"))
+		n.Put("id",    nodeObj.Get("id"))
+		n.Put("x",     nodeObj.Get("x"))
+		n.Put("y",     nodeObj.Get("y"))
 		n.Put("label", nodeObj.Get("label"))
 		Nodes.Put(nodeObj.Get("id"), n)
-		Log("Node: " & nodeObj.Get("id"))
+		Log("Node: " & nodeObj.Get("id") & " at (" & nodeObj.Get("x") & "," & nodeObj.Get("y") & ")")
 	Next
 End Sub
 
@@ -147,7 +144,6 @@ Sub ParseEdges(root As Map)
 		e.Put("to",     edgeObj.Get("to"))
 		e.Put("weight", edgeObj.Get("weight"))
 
-		' Check shape exists before parsing
 		If edgeObj.ContainsKey("shape") = False Then
 			Log("WARNING: edge " & edgeObj.Get("id") & " has no shape points")
 			Dim emptyShape As List : emptyShape.Initialize
@@ -175,7 +171,7 @@ Sub ParseEdges(root As Map)
 		End If
 		
 		Edges.Add(e)
-		Log("Edge: " & edgeObj.Get("id") & " (" & edgeObj.Get("from") & " -> " & edgeObj.Get("to") & ") shape pts: " & e.Get("shape"))
+		Log("Edge: " & edgeObj.Get("id") & " (" & edgeObj.Get("from") & " -> " & edgeObj.Get("to") & ")")
 	Next
 End Sub
 
@@ -215,6 +211,8 @@ Sub BuildGraph
 End Sub
 
 Sub RunDijkstra(startId As String, endId As String)
+	Log("Dijkstra running from: " & startId & " to: " & endId)
+
 	Dim dist    As Map : dist.Initialize
 	Dim prev    As Map : prev.Initialize
 	Dim visited As Map : visited.Initialize
@@ -281,6 +279,11 @@ Sub RunDijkstra(startId As String, endId As String)
 		reversed.Add(path.Get(i))
 	Next
 	
+	Log("Path size: " & reversed.Size)
+	For Each n As String In reversed
+		Log("Path node: " & n)
+	Next
+
 	RouteEdges.Initialize
 	For i = 0 To reversed.Size - 2
 		Dim fromId As String = reversed.Get(i)
@@ -291,60 +294,89 @@ Sub RunDijkstra(startId As String, endId As String)
 		End If
 	Next
 
-	Log("Route found: " & reversed.Size & " stops, " & RouteEdges.Size & " edges")
-	DrawOverlay
+	Log("RouteEdges size: " & RouteEdges.Size)
+	ImageViewer.Invalidate
 End Sub
 
 Sub FindEdge(fromId As String, toId As String) As Object
 	For Each edge As Map In Edges
 		Dim a As String = edge.Get("from")
 		Dim b As String = edge.Get("to")
-		If (a = fromId And b = toId) Or (a = toId And b = fromId) Then
+		If a = fromId And b = toId Then
+			edge.Put("flipped", False)
+			Return edge
+		Else If a = toId And b = fromId Then
+			edge.Put("flipped", True)
 			Return edge
 		End If
 	Next
 	Return Null
 End Sub
 
-Sub DrawOverlay
-	ScaleX = Activity.Width / MapImage.Width
-	ScaleY = Activity.Height / MapImage.Height
+Sub ImageViewer_OnDraw(Canvas As Canvas)
+	If Nodes.IsInitialized = False Then Return
+	If Nodes.Size = 0 Then Return
 
-	Log("Image size: " & MapImage.Width & " x " & MapImage.Height)
-	Log("Screen size: " & Activity.Width & " x " & Activity.Height)
-	Log("Scale: " & ScaleX & " x " & ScaleY)
-	
-	OverlayCanvas.Initialize(OverlayPanel)
-	DrawRoute
-	DrawNodes
-	OverlayPanel.Invalidate
-End Sub
+	Dim scale  As Float = ImageViewer.Scale
+	Dim cx     As Float = ImageViewer.CenterX
+	Dim cy     As Float = ImageViewer.CenterY
+	Dim halfW  As Float = ImageViewer.Width  / 2
+	Dim halfH  As Float = ImageViewer.Height / 2
 
-Sub DrawRoute
-	If RouteEdges.Size = 0 Then Return
+	Log("Scale: " & scale & " CenterX: " & cx & " CenterY: " & cy)
 
-	For Each edge As Map In RouteEdges
-		Dim shape As List = edge.Get("shape")
-		For i = 0 To shape.Size - 2
-			Dim p1 As Map = shape.Get(i)
-			Dim p2 As Map = shape.Get(i + 1)
+	' Draw route edges
+	If RouteEdges.Size > 0 Then
+		For Each edge As Map In RouteEdges
+			Dim shape As List = edge.Get("shape")
+			Dim flipped As Boolean = edge.Get("flipped")
 
-			Dim x1 As Float = p1.Get("x") * ScaleX
-			Dim y1 As Float = p1.Get("y") * ScaleY
-			Dim x2 As Float = p2.Get("x") * ScaleX
-			Dim y2 As Float = p2.Get("y") * ScaleY
+			Dim drawShape As List
+			drawShape.Initialize
+			If flipped Then
+				For i = shape.Size - 1 To 0 Step -1
+					drawShape.Add(shape.Get(i))
+				Next
+			Else
+				For i = 0 To shape.Size - 1
+					drawShape.Add(shape.Get(i))
+				Next
+			End If
 
-			OverlayCanvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(80, 0, 120, 255), 16)
-			OverlayCanvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(220, 0, 120, 255), 8)
+			For i = 0 To drawShape.Size - 2
+				Dim p1 As Map = drawShape.Get(i)
+				Dim p2 As Map = drawShape.Get(i + 1)
+
+				Dim ix1 As Float = p1.Get("x")
+				Dim iy1 As Float = p1.Get("y")
+				Dim ix2 As Float = p2.Get("x")
+				Dim iy2 As Float = p2.Get("y")
+
+				Dim x1 As Float = (ix1 - cx) * scale + halfW
+				Dim y1 As Float = (iy1 - cy) * scale + halfH
+				Dim x2 As Float = (ix2 - cx) * scale + halfW
+				Dim y2 As Float = (iy2 - cy) * scale + halfH
+
+				Canvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(80, 0, 120, 255), 16)
+				Canvas.DrawLine(x1, y1, x2, y2, Colors.ARGB(220, 0, 120, 255), 8)
+			Next
 		Next
-	Next
-End Sub
+	End If
 
-Sub DrawNodes
+	' Draw nodes
 	For Each nodeId As String In Nodes.Keys
 		Dim node As Map = Nodes.Get(nodeId)
-		Dim x As Float = node.Get("x") * ScaleX
-		Dim y As Float = node.Get("y") * ScaleY
+		Dim x As Float = (node.Get("x") - cx) * scale + halfW
+		Dim y As Float = (node.Get("y") - cy) * scale + halfH
+
+		' Skip junction nodes
+		Dim label As String = node.Get("label")
+		If label = "" Then Continue
+
+		' If a route is drawn, only show start and end nodes
+		If RouteEdges.Size > 0 Then
+			If nodeId <> StartNode And nodeId <> EndNode Then Continue
+		End If
 
 		Dim fillColor As Int
 		If nodeId = StartNode Then
@@ -355,41 +387,44 @@ Sub DrawNodes
 			fillColor = Colors.ARGB(200, 30, 100, 255)
 		End If
 
-		OverlayCanvas.DrawCircle(x, y, 14, Colors.White, True, 0)
-		OverlayCanvas.DrawCircle(x, y, 11, fillColor, True, 0)
+		Canvas.DrawCircle(x, y, 8, Colors.White, True, 0)
+		Canvas.DrawCircle(x, y, 8, fillColor, True, 0)
 	Next
 End Sub
 
-Sub OverlayPanel_Touch(Action As Int, X As Float, Y As Float)
-	If Action = 1 Then
-		Dim tappedId As String = GetNodeAtPosition(X, Y, 30)
-		If tappedId = "" Then Return
+Sub ImageViewer_Click
+	Dim tapX As Float = ImageViewer.ClickImageX
+	Dim tapY As Float = ImageViewer.ClickImageY
 
-		If StartNode = "" Then
-			StartNode = tappedId
-			Log("Start set: " & StartNode)
-			DrawOverlay
+	Log("Tapped image coords: " & tapX & "," & tapY)
 
-		Else If EndNode = "" And tappedId <> StartNode Then
-			EndNode = tappedId
-			Log("End set: " & EndNode)
-			RunDijkstra(StartNode, EndNode)
+	Dim tappedId As String = GetNodeAtPosition(tapX, tapY, 50)
+	Log("Tapped node: " & tappedId)
+	If tappedId = "" Then Return
 
-		Else
-			StartNode  = tappedId
-			EndNode    = ""
-			RouteEdges.Initialize
-			Log("Reset. New start: " & StartNode)
-			DrawOverlay
-		End If
+	If StartNode <> "" And EndNode <> "" Then
+		StartNode = ""
+		EndNode   = ""
+		RouteEdges.Initialize
+	End If
+
+	If StartNode = "" Then
+		StartNode = tappedId
+		Log("Start set: " & StartNode)
+		ImageViewer.Invalidate
+
+	Else If tappedId <> StartNode Then
+		EndNode = tappedId
+		Log("End set: " & EndNode)
+		RunDijkstra(StartNode, EndNode)
 	End If
 End Sub
 
 Sub GetNodeAtPosition(tapX As Float, tapY As Float, radius As Int) As String
 	For Each nodeId As String In Nodes.Keys
 		Dim node As Map = Nodes.Get(nodeId)
-		Dim nx As Float = node.Get("x") * ScaleX
-		Dim ny As Float = node.Get("y") * ScaleY
+		Dim nx As Float = node.Get("x")
+		Dim ny As Float = node.Get("y")
 		Dim dx As Float = tapX - nx
 		Dim dy As Float = tapY - ny
 		Dim dist As Double = Sqrt(dx * dx + dy * dy)
