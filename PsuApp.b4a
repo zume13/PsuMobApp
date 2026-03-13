@@ -1,6 +1,8 @@
 ﻿Build1=Default,b4a.example
 File1=Layout.bal
+File2=map.png
 FileGroup1=Default Group
+FileGroup2=Default Group
 Group=Default Group
 Library1=core
 Library2=scaleimageview
@@ -15,27 +17,23 @@ NumberOfModules=2
 Version=13.4
 @EndOfDesignText@
 #Region  Project Attributes 
-	#ApplicationLabel: B4A Example
-	#VersionCode: 1
-	#VersionName: 
-	'SupportedOrientations possible values: unspecified, landscape or portrait.
-	#SupportedOrientations: unspecified
-	#CanInstallToExternalStorage: False
+    #ApplicationLabel: B4A Example
+    #VersionCode: 1
+    #VersionName: 
+    #SupportedOrientations: unspecified
+    #CanInstallToExternalStorage: False
 #End Region
 
 #Region  Activity Attributes 
-	#FullScreen: False
-	#IncludeTitle: False
+    #FullScreen: False
+    #IncludeTitle: False
 #End Region
 
 Sub Process_Globals
-	'These global variables will be declared once when the application starts.
-	'These variables can be accessed from all modules.
 	Private xui As XUI
 End Sub
 
 Sub Globals
-	'These global variables will be redeclared each time the activity is created.
 End Sub
 
 Sub Activity_Create(FirstTime As Boolean)
@@ -43,13 +41,7 @@ Sub Activity_Create(FirstTime As Boolean)
 End Sub
 
 Sub Activity_Resume
-
 End Sub
 
-Sub Activity_Pause (UserClosed As Boolean)
-
-End Sub
-
-Sub Button1_Click
-	xui.MsgboxAsync("Hello world!", "B4X")
+Sub Activity_Pause(UserClosed As Boolean)
 End Sub
