@@ -2,59 +2,31 @@ b4a.example
 0
 0
 0
-main,activity_create,1,1,32,46
-,routeedges,,startnode,,endnode,,mapimage,,imageviewer,,nodes,,edges,,graph
-,startnode,,endnode,,mapimage
-,loadallmapdata,,parsenodes,,parseedges,,buildgraph
-main,loadallmapdata,0,0,54,78
-,nodes,,edges,,graph,,imageviewer
-
-,parsenodes,,parseedges,,buildgraph
-main,activity_pause,0,0,51,52
+main,activity_create,1,0,25,27
 
 
 
-main,activity_resume,0,0,48,49
+main,activity_pause,0,0,33,35
 
 
 
-main,buildgraph,0,0,159,192
-,graph,,edges
-
-
-main,findedge,0,0,282,295
-,edges
-
-
-main,getnodeatposition,0,0,404,417
-,nodes
-
-
-main,globals,0,1,19,30
+main,activity_resume,0,0,29,31
 
 
 
-main,imageviewer_click,0,0,376,402
-,imageviewer,,startnode,,endnode,,routeedges,,nodes,,graph,,edges
-,startnode,,endnode
-,getnodeatposition,,rundijkstra,,findedge
-main,rundijkstra,0,0,194,280
-,nodes,,graph,,routeedges,,imageviewer,,edges
-
-,findedge
-main,imageviewer_ondraw,0,0,297,374
-,nodes,,imageviewer,,routeedges,,startnode,,endnode
+main,globals,0,1,21,23
 
 
-main,parsenodes,0,0,80,104
-,nodes
+
+main,gotopage,0,0,42,55
 
 
-main,parseedges,0,0,106,157
-,edges
+
+main,nextb_click,0,0,38,40
 
 
-main,process_globals,0,1,15,17
+,gotopage
+main,process_globals,0,1,15,19
 
 
 
@@ -79,6 +51,94 @@ starter,service_start,0,0,18,20
 
 
 starter,service_taskremoved,0,0,22,24
+
+
+
+facilities,activity_create,1,0,19,23
+
+
+
+facilities,activity_pause,0,0,29,31
+
+
+
+facilities,activity_resume,0,0,25,27
+
+
+
+facilities,globals,0,1,12,17
+
+
+
+facilities,process_globals,0,1,6,10
+
+
+
+map,activity_create,1,0,21,24
+,facilitiesb,,foodb,,mapb,,searcht
+,facilitiesb,,foodb,,mapb,,searcht
+
+map,activity_keypress,0,0,91,97
+
+
+,goback
+map,goback,0,0,78,89
+
+
+
+map,activity_pause,0,0,30,31
+
+
+
+map,activity_resume,0,0,26,28
+
+
+
+map,facilitiesb_touch,0,0,69,76
+,facilitiesb
+
+,gotopage
+map,gotopage,0,0,38,50
+
+
+
+map,foodb_touch,0,0,60,67
+,foodb
+
+,gotopage
+map,globals,0,1,12,19
+
+
+
+map,mapb_touch,0,0,52,58
+,mapb
+
+
+map,process_globals,0,1,6,10
+
+
+
+map,searchb_click,0,0,34,36
+
+
+
+food,activity_create,0,0,18,22
+
+
+
+food,activity_pause,0,0,28,30
+
+
+
+food,activity_resume,0,0,24,26
+
+
+
+food,globals,0,1,12,16
+
+
+
+food,process_globals,0,1,6,10
 
 
 

@@ -14,5 +14,6 @@ public final class R {
   public static final class style {
     public static final int LightTheme=0x7f020000;
     public static final int LowerCaseMenu=0x7f020001;
+    public static final int NoAnimation=0x7f020002;
   }
 }
